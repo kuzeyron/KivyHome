@@ -1,0 +1,34 @@
+[size={0}][b]Privacy Policy about KivyHome[/b][/size]
+
+KivyHome is an Open-Sourced project licensed under the GNU General Public License v3.0. 
+This privacy policy will explain how the KivyHome uses the personal data we collect from you while using KivyHome.
+
+[size={1}][b]What data do we collect?[/b][/size]
+KivyHome do not collect any data.
+
+[size={1}][b]How do we collect your data?[/b][/size]
+KivyHome do not collect any data.
+
+[size={1}][b]How will we use your data?[/b][/size]
+KivyHome will ask for needed permissions to be able to function. The data KivyHome uses will never leave your device.
+
+[size={1}][b]How do we store your data?[/b][/size]
+KivyHome stores the customizable configuration that is for personal use and also caching some of the content so no data will be lost if the user choose to restart the device or application. Factory resetting the application will return with the default configuration that comes with KivyHome.
+
+[size={1}][b]Marketing[/b][/size]
+KivyHome does not perform any marketing.
+
+[size={1}][b]What are your data protection rights?[/b][/size]
+All data will be destroyed when you uninstall KivyHome from your device.
+
+[size={1}][b]What kind of permissions are being used?[/b][/size]
+List of needed permissions that is required for the KivyHome to work:
+[size={2}]&bl;[b]QUERY_ALL_PACKAGES[/b] – To be able to load applications&br;[/size]
+[size={2}]&bl;[b]VIBRATE[/b] – For heptic feedback while holding down buttons and cards&br;[/size]
+[size={2}]&bl;[b]INTERNET[/b] – Demo widget uses UrlRequest&br;[/size]
+
+KivyHome keeps its privacy policy under regular review and is found in the application and on the GitHub page.
+
+[size={1}][b]How to contact us[/b][/size]
+[size={2}]Email the maintainer at [color=ADD8E6][ref=mailto:globalkuzeyron@gmail.com]globalkuzeyron@gmail.com[/ref][/color][/size]
+[size={2}]On GitHub: [color=ADD8E6][ref=https://github.com/kuzeyron/ProjectEyesight]https://github.com/kuzeyron/ProjectEyesight[/ref][/color][/size]
