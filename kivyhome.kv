@@ -4,7 +4,7 @@
 #:import Media libs.media.Media
 
 <Basement>:
-    padding: 0, app.cutout_height, 0, app.navbar_height
+    padding: 0, app.statbar_height, 0, 0
     spacing: dp(2)
     orientation: 'vertical'
     canvas.before:
@@ -22,6 +22,7 @@
             name: 'main'
             BoxLayout:
                 orientation: 'vertical'
+                padding: 0, 0, 0, app.navbar_height
                 DesktopApplications:
                     id: desk_apps
                 Controllers:
@@ -30,12 +31,20 @@
             name: 'media'
             BoxLayout:
                 orientation: 'vertical'
-                Media:
-                Controllers:
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: 0, 0, 0, app.navbar_height
+                    Media:
+                    Controllers:
 
         Screen:
             name: 'other'
-            Controllers:
+            BoxLayout:
+                orientation: 'vertical'
+                padding: 0, 0, 0, app.navbar_height
+                Label:
+                    text: 'Almost empty'
+                Controllers:
 
         Screen:
             name: 'all_apps'

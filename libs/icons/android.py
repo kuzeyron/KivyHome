@@ -58,22 +58,22 @@ class GetPackages:
             package = domain.activityInfo.packageName
             info = pm.getApplicationInfo(package, pm.GET_META_DATA)
             name = pm.getApplicationLabel(info)
-            filename = join(cache_folder, f'{package}.jpeg')
+            filename = join(cache_folder, f'{package}.png')
             image = None
 
             if not (old := isfile(filename)):
                 Logger.debug('Rendering icon: %s', filename)
                 drawable = domain.activityInfo.loadIcon(pm)
-                bitmap = Bitmap.createBitmap(80, 80, BitmapConfig.ARGB_8888)
+                bitmap = Bitmap.createBitmap(100, 100, BitmapConfig.ARGB_8888)
                 stream, canvas = OutputStream(), Canvas(bitmap)
                 drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
                 drawable.draw(canvas)
-                bitmap.compress(CompressFormat.JPEG, 85, stream)
-                image = Image(BytesIO(bytes(stream.toByteArray())), ext='jpeg')
+                bitmap.compress(CompressFormat.PNG, 100, stream)
+                image = Image(BytesIO(bytes(stream.toByteArray())), ext='png')
             else:
                 Logger.debug('Loading icon: %s', filename)
                 image = Image(filename)
- 
+
             Clock.schedule_once(partial(self.add_one, name=name,
                                         package=package, texture=image,
                                         old=old, path=filename), 0)
@@ -86,12 +86,12 @@ class GetPackages:
 
         if not kwargs['old']:
             texture.save(kwargs['path'], flipped=False)
-        
+
         kwargs['texture'] = texture.texture
         self.add_widget(AppIcon(**kwargs))
-        
+
         if kwargs['package'] in app.desktop_icons:
             app.root.ids.desk_apps.ids.favorite_apps.add_widget(AppIcon(**kwargs))
-    
+ 
     def on_busy(self, status, *largs):
         self.popup.isbusy = status

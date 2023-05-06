@@ -10,7 +10,6 @@ Builder.load_string('''
     orientation: 'vertical'
     size_hint: None, None
     size: dp(66), dp(86)
-    mipmap: True
     Widget:
         size: dp(66), dp(66)
         size_hint: None, None
