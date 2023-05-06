@@ -13,10 +13,10 @@ jobs:
         id: buildozer
         with:
           workdir: .
-          buildozer_version: git+https://github.com/kuzeyron/buildozer.git@master
+          buildozer_version: git+https://github.com/kuzeyron/buildozer.git@cutouts
           command: sudo /usr/bin/python3 -m pip install cython==0.29.33 && pip3 install cython==0.29.33 && buildozer android debug
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: package-emma
+          name: package-kivyhome
           path: ${{ steps.buildozer.outputs.filename }}
