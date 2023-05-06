@@ -44,7 +44,7 @@ Builder.load_string('''
                 blur_radius: dp(50)
 
 <AppContainer>:
-    padding: 0, dp(10), 0, app.cutout_height + dp(5) + dp(10)
+    padding: 0, dp(10), 0, app.navbar_height if app.navbar_height else dp(10)
     canvas.before:
         Color:
             rgba: 0, 0, 0, .3
@@ -114,15 +114,15 @@ class Applications(GetApps, StackLayout):  # type: ignore
 
 
 class AppList(ScrollView):
+    __events__ = ('on_event', )
     direction = StringProperty('down')
-    event = BooleanProperty(False)
     scroll_distance = NumericProperty('40dp')
     scroll_timeout = NumericProperty(350)
     target = StringProperty('main')
 
     def on_scroll_y(self, *largs):
         if self.scroll_y > 1.22:
-            self.event = not self.event
+            self.dispatch('on_event')
 
     def on_event(self, *largs):
         App.get_running_app().change_target(self.direction,

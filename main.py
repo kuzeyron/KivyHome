@@ -49,7 +49,7 @@ Builder.load_string('''
         Screen:
             name: 'main'
             BoxLayout:
-                padding: [0, app.cutout_height + dp(10)] * 2
+                padding: 0, app.cutout_height + dp(5), 0, app.navbar_height + dp(5)
                 DesktopApplications:
                     id: desk_apps
                     orientation: 'bt-rl'
