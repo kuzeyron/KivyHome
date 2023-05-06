@@ -6,6 +6,7 @@ from os.path import getmtime, isfile, join
 from shutil import rmtree
 from threading import Thread
 
+from android.storage import app_storage_path
 from jnius import autoclass, cast
 from kivy.app import App
 from kivy.clock import Clock
@@ -45,7 +46,7 @@ class GetPackages:
         Canvas = autoclass("android.graphics.Canvas")
         BitmapConfig = autoclass("android.graphics.Bitmap$Config")
         CompressFormat = autoclass("android.graphics.Bitmap$CompressFormat")
-        cache_folder = join('.cache', 'icons')
+        cache_folder = join(app_storage_path(), '.cache', 'icons')
         makedirs(cache_folder, exist_ok=True)
 
         if time.time() - getmtime(cache_folder) >= 259200:
@@ -57,7 +58,7 @@ class GetPackages:
             package = domain.activityInfo.packageName
             info = pm.getApplicationInfo(package, pm.GET_META_DATA)
             name = pm.getApplicationLabel(info)
-            filename = join(cache_folder, f'{domain};{name}.jpeg')
+            filename = join(cache_folder, f'{package}.jpeg')
             image = None
 
             if not (old := isfile(filename)):
@@ -67,15 +68,16 @@ class GetPackages:
                 stream, canvas = OutputStream(), Canvas(bitmap)
                 drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
                 drawable.draw(canvas)
-                bitmap.compress(CompressFormat.JPEG, 65, stream)
+                bitmap.compress(CompressFormat.JPEG, 85, stream)
                 image = Image(BytesIO(bytes(stream.toByteArray())), ext='jpeg')
             else:
                 Logger.debug('Loading icon: %s', filename)
                 image = Image(filename)
-            
+ 
             Clock.schedule_once(partial(self.add_one, name=name,
                                         package=package, texture=image,
                                         old=old, path=filename), 0)
+
         Clock.schedule_once(partial(self.on_busy, False), 0)
 
     def add_one(self, *largs, **kwargs):
@@ -83,7 +85,7 @@ class GetPackages:
         texture = kwargs['texture']
 
         if not kwargs['old']:
-            texture.save(kwargs['path'])
+            texture.save(kwargs['path'], flipped=False)
         
         kwargs['texture'] = texture.texture
         self.add_widget(AppIcon(**kwargs))

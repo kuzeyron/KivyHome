@@ -1,0 +1,43 @@
+#:import Applications libs.icons.AppContainer
+#:import Controllers libs.controllers.Controllers
+#:import DesktopApplications libs.icons.DesktopApplications
+#:import Media libs.media.Media
+
+<Basement>:
+    padding: 0, app.cutout_height, 0, app.navbar_height
+    spacing: dp(2)
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            texture: app.bg
+            size: self.size
+            pos: self.pos
+
+    ScreenManager:
+        id: sm
+
+        Screen:
+            name: 'main'
+            BoxLayout:
+                orientation: 'vertical'
+                DesktopApplications:
+                    id: desk_apps
+                Controllers:
+
+        Screen:
+            name: 'media'
+            BoxLayout:
+                orientation: 'vertical'
+                Media:
+                Controllers:
+
+        Screen:
+            name: 'other'
+            Controllers:
+
+        Screen:
+            name: 'all_apps'
+            AppContainer:
+
