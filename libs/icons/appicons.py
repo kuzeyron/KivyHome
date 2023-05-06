@@ -31,9 +31,9 @@ Builder.load_string('''
                 texture: root.texture
     Label:
         color: 1, 1, 1, .8
-        font_size: dp(10)
+        font_size: dp(9.5)
         outline_width: dp(1)
-        size_hint_y: .2
+        size_hint_y: .1
         text: root.name
 ''')
 

@@ -32,19 +32,19 @@ Builder.load_string('''
         size_hint: None, None
         source: 'assets/images/loading.gif'
         anim_delay: 1/20
-        canvas.before:
-            Color:
-                rgba: 0, 0, 0, .5
-            BoxShadow:
-                pos: self.pos
-                size: self.size
-                offset: 0, 0
-                spread_radius: -dp(20), -dp(20)
-                border_radius: [dp(30), ] * 4
-                blur_radius: dp(50)
+
+<DesktopApplications>:
+    padding: 0, app.statbar_height, 0, 0
+    orientation: 'vertical'
+
+    FavoriteApplications:
+        id: favorite_apps
+        orientation: 'bt-rl'
+        padding: dp(10), 0
+        spacing: dp(10), dp(5)
 
 <AppContainer>:
-    padding: 0, dp(10), 0, app.navbar_height if app.navbar_height else dp(10)
+    padding: 0, dp(10), 0, app.navbar_height or dp(10)
     canvas.before:
         Color:
             rgba: 0, 0, 0, .3
@@ -79,7 +79,7 @@ class ProgressHolder(ModalView):
             a.start(self)
 
 
-class DesktopApplications(StackLayout):
+class FavoriteApplications(StackLayout):
     direction = StringProperty('up')
     initial = NumericProperty()
     target = StringProperty('all_apps')
@@ -128,5 +128,10 @@ class AppList(ScrollView):
         App.get_running_app().change_target(self.direction,
                                             self.target)
 
+
 class AppContainer(BoxLayout):
+    pass
+
+
+class DesktopApplications(BoxLayout):
     pass

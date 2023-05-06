@@ -1,3 +1,4 @@
+import time
 from functools import partial
 from io import BytesIO
 from os import makedirs
@@ -46,8 +47,8 @@ class GetPackages:
         CompressFormat = autoclass("android.graphics.Bitmap$CompressFormat")
         cache_folder = join('.cache', 'icons')
         makedirs(cache_folder, exist_ok=True)
-    
-        if getmtime(cache_folder) >= 259200:
+
+        if time.time() - getmtime(cache_folder) >= 259200:
             rmtree(cache_folder)
             Logger.debug('Deleted cached icons')
             makedirs(cache_folder, exist_ok=True)
@@ -88,7 +89,7 @@ class GetPackages:
         self.add_widget(AppIcon(**kwargs))
         
         if kwargs['package'] in app.desktop_icons:
-            app.root.ids.desk_apps.add_widget(AppIcon(**kwargs))
+            app.root.ids.desk_apps.ids.favorite_apps.add_widget(AppIcon(**kwargs))
     
     def on_busy(self, status, *largs):
         self.popup.isbusy = status

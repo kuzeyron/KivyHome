@@ -29,7 +29,7 @@ class GetPackages:
         self.add_widget(AppIcon(**kwargs))
 
         if kwargs['package'] in app.desktop_icons:
-            app.root.ids.desk_apps.add_widget(AppIcon(**kwargs))
+            app.root.ids.desk_apps.ids.favorite_apps.add_widget(AppIcon(**kwargs))
 
     def on_busy(self, status, *largs):
         self.popup.isbusy = status

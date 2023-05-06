@@ -8,6 +8,7 @@ __all__ = ('HideBars', )
 
 CUTOUT_HEIGHT = 0.
 NAVBAR_HEIGHT = 0.
+STATBAR_HEIGHT = 0.
 
 if platform == 'android':
     run_on_ui_thread = import_module('android.runnable').run_on_ui_thread
@@ -27,6 +28,8 @@ if platform == 'android':
             displayMetrics = autoclass('android.util.DisplayMetrics')
             mActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics())
             resources = mActivity.getResources()
+            resourceId = resources.getIdentifier('status_bar_height', 'dimen', 'android')
+            STATBAR_HEIGHT = float(resources.getDimensionPixelSize(resourceId))
             resourceId = resources.getIdentifier('navigation_bar_height', 'dimen', 'android')
             NAVBAR_HEIGHT = float(resources.getDimensionPixelSize(resourceId)
                                   if resourceId > 0 else 0)
@@ -50,6 +53,7 @@ else:
 class HideBars:
     cutout_height = CUTOUT_HEIGHT
     navbar_height = NAVBAR_HEIGHT
+    statbar_height = STATBAR_HEIGHT
 
     def __init__(self, **kwargs):
         Window.bind(on_keyboard=self.key_press)
