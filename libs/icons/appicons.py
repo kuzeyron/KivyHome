@@ -1,9 +1,11 @@
 from kivy.lang import Builder
-from kivy.properties import BooleanProperty, ObjectProperty, StringProperty
+from kivy.properties import (BooleanProperty, DictProperty, ObjectProperty,
+                             StringProperty)
 from kivy.uix.boxlayout import BoxLayout
 
 from libs.applauncher import launch_app
 from libs.long_press import LongPress
+from kivy.app import App
 
 Builder.load_string('''
 <AppIcon>:
@@ -43,6 +45,8 @@ class AppIcon(LongPress, BoxLayout):
     package = StringProperty()
     path = StringProperty()
     texture = ObjectProperty(None, allownone=True)
+    listing = StringProperty()
+    arguments = DictProperty()
 
     def on_execution(self, *largs):
         super().on_execution(*largs)

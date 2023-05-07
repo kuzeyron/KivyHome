@@ -34,7 +34,6 @@ Builder.load_string('''
         anim_delay: 1/20
 
 <DesktopApplications>:
-    padding: 0, app.statbar_height, 0, 0
     orientation: 'vertical'
 
     FavoriteApplications:
@@ -63,7 +62,6 @@ Builder.load_string('''
             Applications:
                 size_hint_y: None
                 height: self.minimum_height
-
 ''')
 
 class ProgressHolder(ModalView):
