@@ -283,7 +283,7 @@ android.allow_backup = True
 # android.manifest_placeholders = [:]
 
 # (bool) disables the compilation of py to pyc/pyo files when packaging
-# android.no-compile-pyo = True
+android.no-compile-pyo = True
 
 # (str) The format used to package the app for release mode (aab or apk).
 # android.release_artifact = aab
