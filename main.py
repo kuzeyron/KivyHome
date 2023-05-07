@@ -5,6 +5,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import platform
 
 from libs.android_hide_system_bars import HideBars
+from libs.favorite_apps import retrieve_favorite_apps, store_favorite_apps
 from libs.wallpaper import wallpaper
 
 if platform not in {'android', 'ios'}:
@@ -20,15 +21,16 @@ class Basement(BoxLayout):
 
 class KivyHome(App, HideBars):
     bg = ObjectProperty(None, allownone=True)
-    desktop_icons = ListProperty(['org.test.fake2', 'org.test.fake5', 'com.android.settings',
-                                  'com.huawei.camera', 'in.krosbits.musicolet', 'org.kuzeyron.eyesight',
-                                  'com.discord', 'com.ebay.mobile', 'com.github.android',
-                                  'org.mozilla.firefox', 'com.radiolight.suede', 'com.ninegag.android.app',
-                                  'com.imdb.mobile'])
+    desktop_icons = ListProperty()
 
     def build(self):
+        self.desktop_icons = retrieve_favorite_apps()
+        self.bind(desktop_icons=self.store_favorites)
         self.bg = wallpaper('assets/wallpapers/city.jpg')
         return Basement()
+
+    def store_favorites(self, *largs):
+        self.desktop_icons = store_favorite_apps(config=self.desktop_icons)
 
     def change_target(self, orientation, target, *largs):
         manager = self.root.ids.sm

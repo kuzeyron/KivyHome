@@ -86,7 +86,8 @@ class GetPackages:
 
         if not kwargs['old']:
             texture.save(kwargs['path'], flipped=False)
-
+        
+        kwargs['arguments'] = kwargs
         kwargs['texture'] = texture.texture
         self.add_widget(AppIcon(**kwargs))
 

@@ -15,17 +15,19 @@ class GetPackages:
 
     def ready(self):
         Clock.schedule_once(partial(self.on_busy, True), 0)
-        for _ in range(5):
-            for fpack in range(1, 11):
-                Clock.schedule_once(partial(self.add_one,
-                                            name=f'Fake App ({fpack})',
-                                            package=f'org.test.fake{fpack}',
-                                            path=f'assets/icons/{fpack}.png'), 0)
+
+        for fpack in range(1, 11):
+            Clock.schedule_once(partial(self.add_one,
+                                        name=f'Fake App ({fpack})',
+                                        package=f'org.test.fake{fpack}',
+                                        path=f'assets/icons/{fpack}.png'), 0)
+
         Clock.schedule_once(partial(self.on_busy, False), 0)
 
     def add_one(self, *largs, **kwargs):
         app = App.get_running_app()
         kwargs['texture'] = Image(kwargs['path']).texture
+        kwargs['arguments'] = kwargs
         self.add_widget(AppIcon(**kwargs))
 
         if kwargs['package'] in app.desktop_icons:
