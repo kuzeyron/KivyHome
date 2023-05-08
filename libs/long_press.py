@@ -69,6 +69,11 @@ class AppMenuButton(ButtonBehavior, Label):
     def remove(self, package):
         _app = App.get_running_app()
         _app.desktop_icons.remove(package)
+        desktop = _app.root.ids.desk_apps.ids.favorite_apps
+
+        for child in desktop.children:
+            if child.package == package:
+                desktop.remove_widget(child)
 
 
 class AppMenu(ModalView):
