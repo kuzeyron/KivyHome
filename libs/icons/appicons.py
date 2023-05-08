@@ -5,7 +5,6 @@ from kivy.uix.boxlayout import BoxLayout
 
 from libs.applauncher import launch_app
 from libs.long_press import LongPress
-from kivy.app import App
 
 Builder.load_string('''
 <AppIcon>:
