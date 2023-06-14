@@ -8,4 +8,4 @@ Like you would normally.
 You can find the Privacy statement [here](https://github.com/kuzeyron/KivyHome/blob/main/PRIVACY.md).
 
 ## Screenshot
-<img src="https://github.com/kuzeyron/KivyHome/blob/main/screenshots/screenshot1.jpg" />
+<img src="https://github.com/kuzeyron/KivyHome/tree/master/screenshots/screenshot1.jpg" />
