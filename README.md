@@ -7,5 +7,5 @@ Like you would normally.
 ## Privacy
 You can find the Privacy statement [here](https://github.com/kuzeyron/KivyHome/blob/main/PRIVACY.md).
 
-## Screenshot
-<img src="https://github.com/kuzeyron/KivyHome/blob/master/screenshots/screenshot1.jpg" height=400 />
+## Presentation
+[![KivyHome in its early stage](https://img.youtube.com/vi/5DORe2UoE0k/0.jpg)](https://www.youtube.com/watch?v=5DORe2UoE0k "KivyHome in its early stage")
