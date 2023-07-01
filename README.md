@@ -8,4 +8,6 @@ Like you would normally.
 You can find the Privacy statement [here](https://github.com/kuzeyron/KivyHome/blob/main/PRIVACY.md).
 
 ## Presentation
-https://www.youtube.com/embed/5DORe2UoE0k
+[![KivyHome in its early stage]
+(https://img.youtube.com/vi/5DORe2UoE0k/maxresdefault.jpg)]
+(https://youtube.com/shorts/5DORe2UoE0k)
