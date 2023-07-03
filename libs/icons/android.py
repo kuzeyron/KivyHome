@@ -81,7 +81,7 @@ class GetPackages:
         Clock.schedule_once(partial(self.on_busy, False), 0)
 
     def add_one(self, *largs, **kwargs):
-        app = App.get_running_app()
+        _app = App.get_running_app()
         texture = kwargs['texture']
 
         if not kwargs['old']:
@@ -89,10 +89,14 @@ class GetPackages:
         
         kwargs['arguments'] = kwargs
         kwargs['texture'] = texture.texture
-        self.add_widget(AppIcon(**kwargs))
 
-        if kwargs['package'] in app.desktop_icons:
-            app.root.ids.desk_apps.ids.favorite_apps.add_widget(AppIcon(**kwargs))
+        if dtype :=  _app.desktop_icons.get(kwargs['package'], False):
+            if dtype := dtype.get('dtype', kwargs.get('dtype', 'desk_apps')):
+                kwargs['dtype'] = dtype
+                instance = _app.root.ids[kwargs['dtype']]
+                instance.add_widget(AppIcon(**kwargs))
+
+        self.add_widget(AppIcon(**kwargs))
  
     def on_busy(self, status, *largs):
         self.popup.isbusy = status

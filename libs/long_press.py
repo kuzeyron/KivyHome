@@ -52,28 +52,39 @@ Builder.load_string('''
             text: 'Add to home'
             on_release: self.add(root.package)
         AppMenuButton:
+            text: 'Add to drawyer'
+            on_release:
+                self.dtype = 'desk_favs'
+                self.add(root.package)
+        AppMenuButton:
             text: 'Remove from home'
             on_release: self.remove(root.package)
 
 ''')
 
 class AppMenuButton(ButtonBehavior, Label):
+    dtype = StringProperty('desk_apps')
+
     def add(self, package):
         _app = App.get_running_app()
 
         if package not in _app.desktop_icons:
-            _app.desktop_icons.append(package)
-            fav = _app.root.ids.desk_apps.ids.favorite_apps
-            fav.add_widget(Factory.AppIcon(**self.parent.parent.arguments))
+            collection = self.parent.parent.arguments
+            collection.update(dict(dtype=self.dtype))
+            _app.desktop_icons.update({package: collection})
+            instance = _app.root.ids[self.dtype]
+            instance.add_widget(Factory.AppIcon(**collection))
 
     def remove(self, package):
         _app = App.get_running_app()
-        _app.desktop_icons.remove(package)
-        desktop = _app.root.ids.desk_apps.ids.favorite_apps
 
-        for child in desktop.children:
-            if child.package == package:
-                desktop.remove_widget(child)
+        if dtype :=  _app.desktop_icons.get(package, False):
+            if dtype := dtype.get('dtype', self.dtype):
+                del _app.desktop_icons[package]
+                instance = _app.root.ids[dtype]
+                for child in instance.children:
+                    if child.package == package:
+                        instance.remove_widget(child)
 
 
 class AppMenu(ModalView):
@@ -87,7 +98,7 @@ class LongPress(ButtonBehavior):
     __events__ = ('on_execution', 'on_menu', 'on_trigger', )
     _vib = ObjectProperty(None, allownone=True)
     always_release = BooleanProperty(True)
-    background_color = ColorProperty((.3, .2, .3, .7))
+    color_opacity = NumericProperty(1.)
     long_tick = NumericProperty(1)
     count = NumericProperty(0)
     isfree = BooleanProperty(True)
@@ -95,12 +106,12 @@ class LongPress(ButtonBehavior):
 
     def on_state(self, instance, state):
         if state == 'down':
-            self.background_color = (.4, .3, .4, .7)
+            self.color_opacity = .5
             self.isfree = True
             self._clock = Clock.schedule_once(self.stop_counting, self.long_tick)
             Thread(target=self.start_counting, daemon=True).start()
         else:
-            self.background_color = (.3, .2, .3, .7)
+            self.color_opacity = 1
             self._clock.cancel()
             self.isfree = False
 
@@ -116,15 +127,17 @@ class LongPress(ButtonBehavior):
 
     def on_touch_move(self, touch):
         super().on_touch_move(touch)
-        self.isfree = False
-        self.count = 0
+        if self.collide_point(*touch.pos):
+            self.isfree = False
+            self.count = 0
+            App.get_running_app().change_target('up', 'main')
 
     @mainthread
     def on_trigger(self, *largs):
-        if .2 > self.count > .02:
+        if self.count < .1:
             self.dispatch('on_execution')
             self._vib = vibrate(.05)
-        elif self.count > .3:
+        elif self.count > .1:
             self.dispatch('on_menu')
             self._vib = vibrate(.05)
 

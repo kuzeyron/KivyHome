@@ -1,5 +1,5 @@
 # KivyHome
-For people that want to use Kivy as home app.
+For people that want to use Kivy as home app/launcher.
 
 ## Usage
 Like you would normally.
@@ -8,4 +8,4 @@ Like you would normally.
 You can find the Privacy statement [here](https://github.com/kuzeyron/KivyHome/blob/main/PRIVACY.md).
 
 ## Presentation
-[![KivyHome in its early stage](https://img.youtube.com/vi/5DORe2UoE0k/0.jpg)](https://www.youtube.com/watch?v=5DORe2UoE0k "KivyHome in its early stage")
+[![KivyHome in its early stage](https://img.youtube.com/vi/snvD49LRY0I/0.jpg)](https://www.youtube.com/watch?v=snvD49LRY0I "KivyHome in its early stage")

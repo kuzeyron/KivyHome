@@ -32,7 +32,7 @@ def write_to_file(file, config):
 
 
 def reset(file=None): 
-    return write_to_file(file, [])
+    return write_to_file(file, {})
 
 
 def file_exists(file=None):
@@ -48,7 +48,21 @@ def retrieve_favorite_apps(file=None):
 
 
 def store_favorite_apps(file=None, config=None):
-    if isinstance(config, (list, set, tuple)):
-        return write_to_file(file or get_default_file(), config)
+    if isinstance(config, dict):
+        # Workaround since deepcopy doesn't work with
+        # properties from kivy
+        content = {}
 
-    raise Exception("We only support lists, sets and tuples")
+        for k, v in config.items():
+            if isinstance(v, dict):
+                for kk, vv in v.items():
+                    if kk in ('package', 'name', 'dtype'):
+                        if k not in content:
+                            content[k] = {}
+                        content[k][kk] = vv
+
+        write_to_file(file or get_default_file(), content)
+
+        return True
+
+    raise Exception(f"{str(config)} is not a dict")
