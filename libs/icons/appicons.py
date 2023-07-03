@@ -16,13 +16,7 @@ Builder.load_string('''
         size_hint: None, None
         canvas.before:
             Color:
-                rgb: root.background_color
-            RoundedRectangle:
-                pos: self.pos
-                radius: (dp(10), )
-                size: self.size
-            Color:
-                rgb: 1, 1, 1
+                rgba: 1, 1, 1, root.color_opacity
             RoundedRectangle:
                 pos: self.x + dp(2), self.y + dp(2)
                 radius: (dp(15), )
@@ -33,7 +27,8 @@ Builder.load_string('''
         color: 1, 1, 1, .8
         font_size: dp(9.5)
         outline_width: dp(1)
-        size_hint_y: .1
+        size_hint_y: None
+        height: dp(10)
         text: root.name
 ''')
 
@@ -46,6 +41,7 @@ class AppIcon(LongPress, BoxLayout):
     texture = ObjectProperty(None, allownone=True)
     listing = StringProperty()
     arguments = DictProperty()
+    dtype = StringProperty('desk_favs')
 
     def on_execution(self, *largs):
         super().on_execution(*largs)

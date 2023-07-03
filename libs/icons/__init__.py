@@ -34,13 +34,9 @@ Builder.load_string('''
         anim_delay: 1/20
 
 <DesktopApplications>:
-    orientation: 'vertical'
-
-    FavoriteApplications:
-        id: favorite_apps
-        orientation: 'bt-rl'
-        padding: dp(10), 0
-        spacing: dp(10), dp(5)
+    orientation: 'bt-rl'
+    padding: dp(10), 0
+    spacing: dp(10), dp(3)
 
 <AppContainer>:
     padding: 0, dp(10), 0, app.navbar_height or dp(10)
@@ -77,29 +73,6 @@ class ProgressHolder(ModalView):
             a.start(self)
 
 
-class FavoriteApplications(StackLayout):
-    direction = StringProperty('up')
-    initial = NumericProperty()
-    target = StringProperty('all_apps')
-    
-    def on_touch_down(self, touch):
-        super().on_touch_down(touch)
-        self.initial = touch.x
-
-    def on_touch_up(self, touch):
-        super().on_touch_up(touch)
-        if all([
-            self.collide_point(*touch.pos),
-            touch.x > self.initial
-        ]):
-            App.get_running_app().change_target(self.direction,
-                                                self.target)
-
-            return True
-
-        return False
-
-
 class Applications(GetApps, StackLayout):  # type: ignore
     isbusy = BooleanProperty(False)
     padding = ListProperty([dp(10), ] * 4)
@@ -131,5 +104,5 @@ class AppContainer(BoxLayout):
     pass
 
 
-class DesktopApplications(BoxLayout):
+class DesktopApplications(StackLayout):
     pass
