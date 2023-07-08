@@ -25,4 +25,4 @@ def launch_app(package):
     elif platform in {'linux'}:
         execute_command(['gtk-launch', package])
     else:
-        Logger.debug("Launching apps is only supported on Android devices.")
+        Logger.debug("Launching apps is only supported on Linux/Android devices.")

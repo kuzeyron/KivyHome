@@ -10,9 +10,9 @@ Builder.load_string('''
 <AppIcon>:
     orientation: 'vertical'
     size_hint: None, None
-    size: dp(66), dp(86)
+    size: dp(63), dp(83)
     Widget:
-        size: dp(66), dp(66)
+        size: dp(63), dp(63)
         size_hint: None, None
         canvas.before:
             Color:
@@ -25,7 +25,7 @@ Builder.load_string('''
                 texture: root.texture
     Label:
         color: 1, 1, 1, .8
-        font_size: dp(10)
+        font_size: dp(9.5)
         outline_width: dp(1)
         size_hint_y: None
         height: dp(12)

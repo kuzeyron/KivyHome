@@ -1,7 +1,7 @@
 import json
 import sys
 from os import makedirs
-from os.path import dirname, exists, join
+from os.path import abspath, dirname, exists, join
 
 from kivy.utils import platform
 
@@ -15,7 +15,7 @@ def get_default_path():
     if platform == 'android':
         return importer('android.storage', 'app_storage_path')()
 
-    return dirname(sys.argv[0])
+    return dirname(abspath(sys.argv[0]))
 
 
 def get_default_file():
