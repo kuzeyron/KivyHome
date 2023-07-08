@@ -1,5 +1,6 @@
 from kivy.animation import Animation
 from kivy.app import App
+from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import (BooleanProperty, ListProperty, NumericProperty,
@@ -11,8 +12,8 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.stacklayout import StackLayout
 from kivy.utils import platform
 
-from .launchapps import launch_app
 from ..utils import importer
+from .launchapps import launch_app
 
 __all__ = ('Applications', 'AppContainer', 'AppList', )
 
@@ -37,17 +38,17 @@ Builder.load_string('''
 
 <DesktopApplications>:
     orientation: 'bt-rl' if platform == 'android' else 'tb-lr'
-    padding: dp(10), 0
+    padding: dp(20), 0
     spacing: dp(10), dp(3)
 
 <AppContainer>:
-    padding: 0, dp(10), 0, app.navbar_height or dp(10)
+    padding: 0, dp(5), 0, app.navbar_height or dp(5)
     canvas.before:
         Color:
             rgba: 0, 0, 0, .3
         RoundedRectangle:
             pos: self.pos
-            radius: [dp(15), ]
+            radius: [dp(10), ]
             size: self.size
 
     AppList:
@@ -60,7 +61,7 @@ Builder.load_string('''
             Applications:
                 size_hint_y: None
                 height: self.minimum_height
-                spacing: dp(0 if platform == 'android' else 20), \
+                spacing: dp(3 if platform == 'android' else 20), \
                          dp(0 if platform == 'android' else 10)
 ''')
 
@@ -81,7 +82,7 @@ class Applications(GetApps, StackLayout):  # type: ignore
     isbusy = BooleanProperty(False)
     padding = ListProperty([dp(10), ] * 4)
     popup = ObjectProperty()
-    spacing = ListProperty([dp(10), ] * 2)
+    spacing = ListProperty([dp(0), ] * 2)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -91,12 +92,19 @@ class Applications(GetApps, StackLayout):  # type: ignore
 class AppList(ScrollView):
     __events__ = ('on_event', )
     direction = StringProperty('down')
-    scroll_distance = NumericProperty('40dp')
-    scroll_timeout = NumericProperty(350)
+    do_scroll_x = BooleanProperty(False)
+    pressure = NumericProperty(1.6 if platform == 'android' else 1.22)
     target = StringProperty('main')
 
     def on_scroll_y(self, *largs):
-        if self.scroll_y > 1.22:
+        if any([
+                all([self._viewport.height >= self.height,
+                     self.scroll_y >= self.pressure]),
+                all([self.scroll_y < -self.pressure,
+                     platform != 'android'])
+        ]):
+            # all, can scroll
+            # all, revert direction on Linux when no room to scroll (fails in maximized window)
             self.dispatch('on_event')
 
     def on_event(self, *largs):

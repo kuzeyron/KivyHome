@@ -21,10 +21,10 @@ class GetPackages:
         Clock.schedule_once(partial(self.on_busy, True), 0)
         apps_path = '/usr/share/applications'
         for file in sorted(listdir(apps_path)):
-            if '.desktop' in file:
+            if file.endswith('.desktop'):
                 with open(join(apps_path, file), encoding='utf-8') as fl:
                     for ln in fl:
-                        if 'Icon=' in ln:
+                        if ln.startswith('Icon='):
                             # Attempt on finding through .desktop
                             line = ln[5:].strip()
                             name = " ".join([nm.title() for nm in splitter('[.-]',
@@ -53,7 +53,7 @@ class GetPackages:
         kwargs['arguments'] = kwargs
 
         if dtype :=  _app.desktop_icons.get(kwargs['package'], False):
-            if dtype := dtype.get('dtype', kwargs.get('dtype', 'desk_apps')):
+            if dtype := dtype.get('dtype', kwargs.get('dtype', False)):
                 kwargs['dtype'] = dtype
                 instance = _app.root.ids[kwargs['dtype']]
                 instance.add_widget(AppIcon(**kwargs))

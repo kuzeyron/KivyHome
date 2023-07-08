@@ -40,14 +40,16 @@ class Desktop(Carousel):
                 if new_value is (self._next is None):
                     self._prev, self._next = self._next, self._prev
 
-    def on_touch_down(self, touch):
-        super().on_touch_down(touch)
+    def on_touch_move(self, touch):
+        super().on_touch_move(touch)
         self.initial = touch.y
 
     def on_touch_up(self, touch):
         super().on_touch_up(touch)
+        h = self.height
+
         if all([self.collide_point(*touch.pos),
-                self.initial < touch.x,
+                self.initial > (h - (h / 2.5)),
                 touch.dy > 0]):
             return App.get_running_app().change_target(self.smdirection,
                                                        self.target)

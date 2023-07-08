@@ -8,11 +8,16 @@
     orientation: 'vertical'
     canvas.before:
         Color:
+            rgb: 0.243, 0.258, 0.27
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        Color:
             rgb: 1, 1, 1
         Rectangle:
             texture: app.bg
-            size: self.size
-            pos: self.pos
+            size: 600, 600
+            pos: self.center_x - 300, self.center_y - 300
 
     ScreenManager:
         id: sm

@@ -134,7 +134,7 @@ class LongPress(ButtonBehavior):
 
     @mainthread
     def on_trigger(self, *largs):
-        if self.count < .1:
+        if .01 < self.count < .1:
             self.dispatch('on_execution')
             self._vib = vibrate(.05)
         elif self.count > .1:

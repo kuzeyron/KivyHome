@@ -3,7 +3,14 @@ from importlib import import_module
 from kivy.logger import Logger
 from kivy.utils import platform
 
-__all__ = ['vibrate', ]
+__all__ = ('vibrate', )
+
+class FakeVib:
+    def vibrate(self, *largs):
+        pass
+
+    def cancel(self, *largs):
+        pass
 
 
 def vibrate(duration):
@@ -25,12 +32,5 @@ def vibrate(duration):
         return vibrator
 
     Logger.debug("Vibrator function is only supported on Android devices.")
-
-    class FakeVib:
-        def vibrate(self, *largs) -> None:
-            pass
-
-        def cancel(self, *largs) -> None:
-            pass
 
     return FakeVib()

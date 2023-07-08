@@ -3,21 +3,25 @@ from os.path import abspath, dirname, join
 
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.logger import Logger
-from kivy.properties import DictProperty, ObjectProperty
+from kivy.properties import DictProperty, NumericProperty, ObjectProperty
 from kivy.resources import resource_add_path
 from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import platform
+
+from ..favorite_apps_configuration import (retrieve_favorite_apps,
+                                           store_favorite_apps)
 from ..startup import Startup
-from ..favorite_apps_configuration import retrieve_favorite_apps, store_favorite_apps
 from ..utils import importer
 from ..wallpaper import wallpaper
 
 Builder.load_file(join(dirname(abspath(__file__)), 'kv', f'{platform}.kv'))
 
-if platform not in {'android', 'ios'}:
-    from kivy.core.window import Window
+__all__ = ('KivyHome', )
+
+if platform != 'android':
     from kivy.metrics import dp
     Window.size = dp(950), dp(700)
     Logger.debug("Application is not Android.")
@@ -34,7 +38,7 @@ class KivyHome(App, Startup):
     def build(self):
         self.desktop_icons = retrieve_favorite_apps()
         self.bind(desktop_icons=self.store_desktop_data)
-        self.bg = wallpaper('assets/wallpapers/background.jpeg')
+        self.bg = wallpaper(f'assets/wallpapers/background_{platform}.jpeg')
 
         return Basement()
 

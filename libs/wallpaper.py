@@ -1,5 +1,6 @@
 from os import makedirs, stat
-from os.path import basename, isfile, join
+from os.path import abspath, basename, dirname, isfile, join
+from sys import argv
 
 from kivy.core.image import Image
 from kivy.core.window import Window
@@ -8,16 +9,16 @@ from kivy.utils import platform
 
 from libs.utils import importer
 
+__author__ = 'cheaterman and kuzeyron'
 __all__ = ('wallpaper', )
 
 if platform == 'android':
     app_storage_path = importer('android.storage', 'app_storage_path')
 else:
     def app_storage_path():
-        return ''
+        return dirname(abspath(argv[0]))
 
 def _cut(texture=None, crop=None):
-    """ Cropping mechanism thanks to Cheaterman """
     crop = crop or Window.size
 
     Logger.debug('Wallpaper: Cropping {texture.size=%s} to {crop=%s}', texture.size, crop)
@@ -36,18 +37,20 @@ def _cut(texture=None, crop=None):
                               height=texture.height)
 
 
-def wallpaper(source=None, crop=None, mipmap=None, reset=None):
+def wallpaper(source=None, crop=None, reset=None):
     filesize = stat(source).st_size
     filename = f"{filesize};{basename(source)}"
     cache_folder = join(app_storage_path(), '.cache', 'wallpapers')
-    makedirs(cache_folder, exist_ok=True)
     path = join(cache_folder, filename)
  
     if not reset and isfile(path):
-        texture = Image(path).texture
-    else:
-        texture = _cut(Image(source).texture)
+        return Image(path).texture
+
+    texture = Image(source).texture    
+    
+    if platform == 'android':
+        texture = _cut(texture)    
+        makedirs(cache_folder, exist_ok=True)
         texture.save(path, flipped=False)
-        print("FUCK YEHA")
 
     return texture
