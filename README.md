@@ -8,5 +8,11 @@ Like you would normally.
 ## Privacy
 You can find the Privacy statement [here](https://github.com/kuzeyron/KivyHome/blob/main/PRIVACY.md).
 
-## Presentation (Android)
-[![KivyHome in its early stage](https://img.youtube.com/vi/0NX6TjETChk/0.jpg)](https://www.youtube.com/watch?v=0NX6TjETChk "KivyHome in its early stage")
+## Presentation
+<details><summary>Android</summary>
+[![KivyHome in its early stage](https://img.youtube.com/vi/SNUo0k_WCmc/0.jpg)](https://www.youtube.com/watch?v=SNUo0k_WCmc "KivyHome in its early stage")
+</details>
+
+<details><summary>Linux</summary>
+[![KivyHome in its early stage](https://img.youtube.com/vi/5OttWdRrBQA/0.jpg)](https://www.youtube.com/watch?v=5OttWdRrBQA "KivyHome in its early stage")
+</details>

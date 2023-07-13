@@ -56,7 +56,7 @@ class Startup:
         android_hide_system_bars()
 
     def key_press(self, w, k, *lr):
-        if there := k in {27} and platform in {'android'}:
+        if there := (k == 27):
             manager = self.root.ids.sm
             manager.transition.direction = 'up'
             manager.current = 'main'
