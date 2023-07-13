@@ -8,6 +8,7 @@ class Desktop(Carousel):
     initial = NumericProperty()
     smdirection = StringProperty('up')
     target = StringProperty('all_apps')
+    scroll_distance = NumericProperty('100dp')
     ignore_perpendicular_swipes = BooleanProperty(True)
 
     def on__offset(self, *args):

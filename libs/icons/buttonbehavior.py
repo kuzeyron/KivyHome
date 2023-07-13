@@ -1,5 +1,5 @@
 from threading import Thread
-from time import sleep
+from time import sleep, time
 
 from kivy.app import App
 from kivy.clock import Clock, mainthread
@@ -9,8 +9,9 @@ from kivy.properties import (BooleanProperty, ColorProperty, DictProperty,
                              NumericProperty, ObjectProperty, StringProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.label import Label
-from kivy.uix.modalview import ModalView
-
+from kivy.uix.relativelayout import RelativeLayout
+from kivy.utils import platform
+from libs.menu import ModalView
 from libs.vibrator import vibrate
 
 __all__ = ('LongPress', )
@@ -30,20 +31,27 @@ Builder.load_string('''
     id: test
     size_hint: None, None
     size: dp(200), dp(200)
-    background_color: .4, .3, .4, .7
-    canvas.before:
+    background_color: 0, 0, 0, 0
+    overlay_color: 0, 0, 0, 0
+    canvas:
         Clear
         Color:
-            rgb: 0, 0, 0
+            rgba: 0, 0, 0, 1
         BoxShadow:
             pos: self.pos
             size: self.size
             offset: 0, 0
-            spread_radius: -20, -20
-            border_radius: 0, 0, 0, 0
+            spread_radius: -10, -10
+            border_radius: dp(10), dp(10), dp(10), dp(10)
             blur_radius: 50
+        Color:
+            rgba: 0, 0, 0, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
 
     BoxLayout:
+        pos: root.pos
         orientation: 'vertical'
 
         AppMenuButton:
@@ -105,11 +113,14 @@ class LongPress(ButtonBehavior):
     arguments = DictProperty()
 
     def on_state(self, instance, state):
-        if state == 'down':
+        touch = self.last_touch.button
+        if state == 'down' and touch in {'left', None}:
             self.color_opacity = .5
             self.isfree = True
             self._clock = Clock.schedule_once(self.stop_counting, self.long_tick)
             Thread(target=self.start_counting, daemon=True).start()
+        elif state == 'down' and touch == 'right':
+            self._clock = Clock.schedule_once(self.on_menu, 0)
         else:
             self.color_opacity = 1
             self._clock.cancel()
@@ -126,11 +137,9 @@ class LongPress(ButtonBehavior):
         self.dispatch('on_trigger')
 
     def on_touch_move(self, touch):
+        self.isfree = False
+        self.count = 0
         super().on_touch_move(touch)
-        if self.collide_point(*touch.pos):
-            self.isfree = False
-            self.count = 0
-            App.get_running_app().change_target('up', 'main')
 
     @mainthread
     def on_trigger(self, *largs):
@@ -150,6 +159,8 @@ class LongPress(ButtonBehavior):
         menu.app_name = self.name
         menu.caller = self
         menu.arguments = self.arguments
+        menu.pos = self.last_touch.pos
+        menu.parent_size = self.parent.size
         menu.open()
         self.count = 0
 
