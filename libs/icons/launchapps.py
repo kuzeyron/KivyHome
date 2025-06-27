@@ -4,7 +4,7 @@ from subprocess import STDOUT, check_output
 from kivy.logger import Logger
 from kivy.utils import platform
 
-__all__ = ['launch_app', ]
+__all__ = ('launch_app', )
 
 def execute_command(cmd):
     return check_output(cmd, encoding='utf8', stderr=STDOUT)
@@ -20,7 +20,7 @@ def launch_app(package):
         context = cast('android.content.Context',
                        PythonActivity.mActivity)
         pm = context.getPackageManager()
-        launcher = pm.getLaunchIntentForPackage(package);
+        launcher = pm.getLaunchIntentForPackage(package)
         activity.startActivity(launcher)
     elif platform in {'linux'}:
         execute_command(['gtk-launch', package])

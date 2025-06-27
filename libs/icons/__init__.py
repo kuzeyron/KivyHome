@@ -1,19 +1,16 @@
 from kivy.animation import Animation
-from kivy.app import App
-from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import (BooleanProperty, ListProperty, NumericProperty,
                              ObjectProperty, StringProperty)
-from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.modalview import ModalView
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.stacklayout import StackLayout
 from kivy.utils import platform
 
+from ..base import KivyHome as Home
 from ..utils import importer
-from .launchapps import launch_app
 
 __all__ = ('Applications', 'AppContainer', 'AppList', )
 
@@ -108,8 +105,8 @@ class AppList(ScrollView):
             self.dispatch('on_event')
 
     def on_event(self, *largs):
-        App.get_running_app().change_target(self.direction,
-                                            self.target)
+        Home().change_target(self.direction,
+                             self.target)
 
 
 class AppContainer(BoxLayout):

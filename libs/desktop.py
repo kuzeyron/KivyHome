@@ -1,6 +1,6 @@
-from kivy.app import App
 from kivy.properties import BooleanProperty, NumericProperty, StringProperty
 from kivy.uix.carousel import Carousel
+from .base import KivyHome as Home
 
 __all__ = ('Desktop', )
 
@@ -17,7 +17,6 @@ class Desktop(Carousel):
         direction = self.direction[0]
         _offset = self._offset
         width = self.width
-        height = self.height
         index = self.index
         if self._skip_slide is not None or index is None:
             return
@@ -52,6 +51,6 @@ class Desktop(Carousel):
         if all([self.collide_point(*touch.pos),
                 self.initial > (h - (h / 2.5)),
                 touch.dy > 0]):
-            return App.get_running_app().change_target(self.smdirection,
-                                                       self.target)
+            return Home().change_target(self.smdirection,
+                                        self.target)
         return False
