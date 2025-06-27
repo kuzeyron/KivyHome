@@ -1,16 +1,14 @@
 from threading import Thread
-from time import sleep, time
+from time import sleep
 
 from kivy.app import App
 from kivy.clock import Clock, mainthread
 from kivy.factory import Factory
 from kivy.lang import Builder
-from kivy.properties import (BooleanProperty, ColorProperty, DictProperty,
-                             NumericProperty, ObjectProperty, StringProperty)
+from kivy.properties import (BooleanProperty, DictProperty, NumericProperty,
+                             ObjectProperty, StringProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.label import Label
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.utils import platform
 from libs.menu import ModalView
 from libs.vibrator import vibrate
 

@@ -5,11 +5,11 @@ from os.path import isfile, join
 from re import split as splitter
 from threading import Thread
 
-from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.image import Image
 
 from ..appicons import AppIcon
+from libs.base import KivyHome
 
 __all__ = ('GetPackages', )
 
@@ -25,11 +25,12 @@ class GetPackages:
                 with open(join(apps_path, file), encoding='utf-8') as fl:
                     for ln in fl:
                         if ln.startswith('Icon='):
-                            # Attempt on finding through .desktop
+                            # Attempt on finding through .desktop files
                             line = ln[5:].strip()
                             name = " ".join([nm.title() for nm in splitter('[.-]',
                                                     line.split('.')[-1])])
-                            if isfile(line) and line.endswith('.png'):
+
+                            if line.endswith('.png') and isfile(line):
                                 Clock.schedule_once(partial(self.add_one,
                                                             name=name,
                                                             package=file,
@@ -48,17 +49,17 @@ class GetPackages:
         Clock.schedule_once(partial(self.on_busy, False), 0)
 
     def add_one(self, *largs, **kwargs):
-        _app = App.get_running_app()
+        _home = KivyHome()
         kwargs['texture'] = Image(kwargs['path'], mipmap=True).texture
         kwargs['arguments'] = kwargs
 
-        if dtype :=  _app.desktop_icons.get(kwargs['package'], False):
+        if dtype :=  _home.desktop_icons.get(kwargs['package'], False):
             if dtype := dtype.get('dtype', kwargs.get('dtype', False)):
                 kwargs['dtype'] = dtype
-                instance = _app.root.ids[kwargs['dtype']]
+                instance = _home.ids[kwargs['dtype']]
                 instance.add_widget(AppIcon(**kwargs))
 
         self.add_widget(AppIcon(**kwargs))
 
-    def on_busy(self, status, *largs):
+    def on_busy(self, status, extra=None):
         self.popup.isbusy = status

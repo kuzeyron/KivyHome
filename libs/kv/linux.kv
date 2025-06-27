@@ -1,0 +1,55 @@
+#:import Applications libs.icons.AppContainer
+#:import DesktopApplications libs.icons.DesktopApplications
+#:import Desktop libs.desktop.Desktop
+
+<KivyHome>:
+    padding: 0, app.statbar_height, 0, 0
+    spacing: dp(2)
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgb: .243, .258, .27
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            texture: root.background_texture
+            size: 600, 600
+            pos: self.center_x - 300, self.center_y - 300
+
+    ScreenManager:
+        id: sm
+
+        Screen:
+            name: 'main'
+            BoxLayout:
+                orientation: 'vertical'
+                padding: 0, 0, 0, app.navbar_height + dp(5)
+                spacing: dp(25)
+                Desktop:
+                    id: desk
+                    DesktopApplications:
+                        id: desk_apps
+                    Label:
+                        text: 'Almost empty'
+                StackLayout:
+                    pos_hint: {'center_x': .5}
+                    size_hint: .95, None
+                    height: self.minimum_height
+                    padding: dp(30), 0, dp(30), dp(5)
+                    spacing: dp(25), dp(10)
+                    id: desk_favs
+                    canvas.before:
+                        Color:
+                            rgba: .5 ,.5 ,.5, .5
+                        RoundedRectangle:
+                            radius: [dp(15), ]
+                            size: self.size
+                            pos: self.pos
+                
+        Screen:
+            name: 'all_apps'
+            AppContainer:
+

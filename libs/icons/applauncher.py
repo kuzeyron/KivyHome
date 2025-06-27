@@ -12,9 +12,10 @@ Builder.load_string('''
     font_size: self.height // 3
     outline_width: app.settings_font_border
     font_name: app.settings_font
+    color_up: self.background_color[:3] + [.5]
     canvas.before:
         Color:
-            rgba: root.background_color if root.state == 'down' else app.coloro
+            rgba: root.background_color if root.state == 'down' else self.color_up
         RoundedRectangle:
             radius: app.border_radius
             pos: self.pos
