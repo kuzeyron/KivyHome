@@ -26,7 +26,6 @@ Builder.load_string('''
     Label:
         color: 1, 1, 1, .8
         font_size: dp(9.5)
-        outline_width: dp(1)
         size_hint_y: None
         height: dp(12)
         text: root.name

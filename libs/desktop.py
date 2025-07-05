@@ -46,11 +46,9 @@ class Desktop(Carousel):
 
     def on_touch_up(self, touch):
         super().on_touch_up(touch)
-        h = self.height
-
         if all([self.collide_point(*touch.pos),
-                self.initial > (h - (h / 2.5)),
+                self.initial > (self.height - (self.height / 2.5)),
                 touch.dy > 0]):
-            return Home().change_target(self.smdirection,
-                                        self.target)
+            return Home().change_direction(self.smdirection,
+                                           self.target)
         return False
