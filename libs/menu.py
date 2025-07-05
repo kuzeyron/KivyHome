@@ -1,5 +1,3 @@
-__all__ = ('ModalView', )
-
 from kivy.animation import Animation
 from kivy.app import App
 from kivy.metrics import dp

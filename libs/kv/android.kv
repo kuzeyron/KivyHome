@@ -8,14 +8,19 @@
     orientation: 'vertical'
     canvas.before:
         Color:
-            rgb: 1, 1, 1
+            rgba: self.background_color
         Rectangle:
-            texture: root.background_texture
+            size: self.size
+            pos: self.pos
+        Color:
+            rgba: 1, 1, 1, (1 if self._background_texture else 0)
+        Rectangle:
+            texture: self._background_texture
             size: self.size
             pos: self.pos
 
     ScreenManager:
-        id: sm
+        id: home_screen_manager
 
         Screen:
             name: 'main'

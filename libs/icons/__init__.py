@@ -93,20 +93,20 @@ class AppList(ScrollView):
     pressure = NumericProperty(1.6 if platform == 'android' else 1.22)
     target = StringProperty('main')
 
-    def on_scroll_y(self, *largs):
-        if any([
+    def on_scroll_y(self, instance=None, value=None):
+        if any((
                 all([self._viewport.height >= self.height,
                      self.scroll_y >= self.pressure]),
                 all([self.scroll_y < -self.pressure,
                      platform != 'android'])
-        ]):
+        )):
             # all, can scroll
             # all, revert direction on Linux when no room to scroll (fails in maximized window)
             self.dispatch('on_event')
 
-    def on_event(self, *largs):
-        Home().change_target(self.direction,
-                             self.target)
+    def on_event(self, instance=None, value=None):
+        Home().change_direction(self.direction,
+                                self.target)
 
 
 class AppContainer(BoxLayout):
