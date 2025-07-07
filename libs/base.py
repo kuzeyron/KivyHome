@@ -27,7 +27,7 @@ class KivyHome(BoxLayout):
         self.desktop_icons = retrieve_favorite_apps()
         self.bind(desktop_icons=self.store_desktop_data)
 
-    def store_desktop_data(self):
+    def store_desktop_data(self, instance=None, value=None):
         store_favorite_apps(config=self.desktop_icons)
 
     def change_direction(self, orientation: str = 'up', target: str = 'main'):
