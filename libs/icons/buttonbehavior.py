@@ -1,7 +1,6 @@
 from threading import Thread
 from time import sleep
 
-from kivy.app import App
 from kivy.clock import Clock, mainthread
 from kivy.factory import Factory
 from kivy.lang import Builder
@@ -9,8 +8,10 @@ from kivy.properties import (BooleanProperty, DictProperty, NumericProperty,
                              ObjectProperty, StringProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.label import Label
-from libs.menu import ModalView
-from libs.vibrator import vibrate
+
+from ..base import KivyHome
+from ..menu import ModalView
+from ..vibrator import vibrate
 
 __all__ = ('LongPress', )
 
@@ -72,17 +73,17 @@ class AppMenuButton(ButtonBehavior, Label):
     dtype = StringProperty('desk_apps')
 
     def add(self, package):
-        _app = App.get_running_app()
+        _app = KivyHome()
 
         if package not in _app.desktop_icons:
             collection = self.parent.parent.arguments
             collection.update(dict(dtype=self.dtype))
             _app.desktop_icons.update({package: collection})
-            instance = _app.root.ids[self.dtype]
+            instance = _app.ids[self.dtype]
             instance.add_widget(Factory.AppIcon(**collection))
 
     def remove(self, package):
-        _app = App.get_running_app()
+        _app = KivyHome()
 
         if dtype :=  _app.desktop_icons.get(package, False):
             if dtype := dtype.get('dtype', self.dtype):
