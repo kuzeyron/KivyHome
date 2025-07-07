@@ -1,12 +1,13 @@
 # KivyHome
 For people that want to use Kivy as home app/launcher for Android devices
-or with Linux machines such as the Rasperry Pi.
+or with Linux machines such as the Rasperry Pi.  
+Plans are to turn this project into a library.
 
 ## Usage
 Like you would normally.
 
 ## Privacy
-You can find the Privacy statement [here](https://github.com/kuzeyron/KivyHome/blob/main/PRIVACY.md).
+You can find the Privacy statement [here](https://github.com/kuzeyron/KivyHome/blob/master/PRIVACY.md).
 
 ## Presentation (Android)
 [![KivyHome in its early stage](https://img.youtube.com/vi/SNUo0k_WCmc/0.jpg)](https://www.youtube.com/watch?v=SNUo0k_WCmc "KivyHome in its early stage")
