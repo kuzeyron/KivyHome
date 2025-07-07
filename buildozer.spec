@@ -37,7 +37,7 @@ version = 0.2.0
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3==3.10.11,hostpython3==3.10.11,kivy==master,requests,urllib3,chardet,idna,pillow
+requirements = python3,kivy==2.3.1,pillow
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -296,10 +296,10 @@ android.no-compile-pyo = True
 #p4a.url =
 
 # (str) python-for-android fork to use in case if p4a.url is not specified, defaults to upstream (kivy)
-p4a.fork = kuzeyron
+# p4a.fork = kuzeyron
 
 # (str) python-for-android branch to use, defaults to master
-p4a.branch = cutouts
+p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
 #p4a.commit = HEAD
