@@ -28,8 +28,8 @@ jobs:
         id: buildozer
         with:
           repository_root: master
-          workdir: test_app
-          buildozer_version: stable
+          workdir: .
+          buildozer_version: master
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -46,7 +46,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.7
+          python-version: 3.13
           architecture: x64
 
       - name: Push binary to data branch
