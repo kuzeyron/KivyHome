@@ -16,6 +16,8 @@ jobs:
   build-android:
     name: Build for Android
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
