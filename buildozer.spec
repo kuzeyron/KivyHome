@@ -94,7 +94,7 @@ icon.filename = %(source.dir)s/assets/images/icon.png
 #icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
 
 # (list) Permissions
-android.permissions = VIBRATE,QUERY_ALL_PACKAGES,INTERNET
+android.permissions = VIBRATE,QUERY_ALL_PACKAGES
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
