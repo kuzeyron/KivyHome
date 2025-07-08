@@ -9,7 +9,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.stacklayout import StackLayout
 from kivy.utils import platform
 
-from ..base import KivyHome as Home
+from ..base import KivyHome
 from ..utils import importer
 
 __all__ = ('Applications', 'AppContainer', 'AppList', )
@@ -17,6 +17,7 @@ __all__ = ('Applications', 'AppContainer', 'AppList', )
 GetApps = importer(f'libs.icons.platforms.{platform}', 'GetPackages')
 Builder.load_string('''
 #:import platform kivy.utils.platform
+#:import KivyHome libs.base.KivyHome
 
 <ProgressHolder>:
     auto_dismiss: False
@@ -39,7 +40,7 @@ Builder.load_string('''
     spacing: dp(10), dp(3)
 
 <AppContainer>:
-    padding: 0, dp(5), 0, app.navbar_height or dp(5)
+    padding: 0, dp(5), 0, KivyHome().cutout_supported_bar_heights[0] or dp(5)
     canvas.before:
         Color:
             rgba: 0, 0, 0, .3
@@ -105,8 +106,8 @@ class AppList(ScrollView):
             self.dispatch('on_event')
 
     def on_event(self, instance=None, value=None):
-        Home().change_direction(self.direction,
-                                self.target)
+        KivyHome().change_direction(orientation=self.direction,
+                                    target=self.target)
 
 
 class AppContainer(BoxLayout):
