@@ -1,56 +1,32 @@
-name: Build
+name: Android BUILD
+
 on:
-  push:
-    branches-ignore:
-      - data
-      - gh-pages
-    tags:
-      - '**'
-  pull_request:
-    branches-ignore:
-      - data
-      - gh-pages
+  workflow_dispatch:
 
 jobs:
-  # Build job. Builds app for Android with Buildozer
   build-android:
     name: Build for Android
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name:
+        uses: actions/setup-java@v4
         with:
-          path: master
-
+          distribution: 'temurin'
+          java-version: '17'
       - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          repository_root: master
-          workdir: .
-          buildozer_version: master
-
+        run: |
+          pip3 install --user --upgrade buildozer cython==0.29.33 virtualenv
+          export PATH=$PATH:~/.local/bin/
+          export APP_ANDROID_ACCEPT_SDK_LICENSE=1
+          export BUILDOZER_WARN_ON_ROOT=0
+          sudo apt update
+          sudo apt install -y git zip unzip python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          cd ${{ github.workspace }}
+          buildozer android debug
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: package
-          path: ${{ steps.buildozer.outputs.filename }}
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          path: data
-          ref: data # Branch name
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-          architecture: armeabi-v7a
-
-      - name: Push binary to data branch
-        if: github.event_name == 'push'
-        run: python master/.ci/move_binary.py "${{ steps.buildozer.outputs.filename }}" master data bin
+          path: bin/*.apk
