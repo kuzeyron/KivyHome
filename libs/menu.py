@@ -1,9 +1,10 @@
 from kivy.animation import Animation
-from kivy.app import App
 from kivy.metrics import dp
 from kivy.properties import (BooleanProperty, ColorProperty, ListProperty,
                              NumericProperty, ObjectProperty, StringProperty)
 from kivy.uix.floatlayout import FloatLayout
+
+from .base import KivyHome
 
 __all__ = ('ModalView', )
 
@@ -130,7 +131,7 @@ class ModalView(FloatLayout):
         from kivy.core.window import Window
         if self._is_open:
             return
-        _app = App.get_running_app()
+        _app = KivyHome()
         self._window = Window
         self._is_open = True
         self.dispatch('on_pre_open')
@@ -139,8 +140,7 @@ class ModalView(FloatLayout):
         ww, wh = Window.size
         left, bottom = xp + mw, yp + mh
         hw, w2 = mw / 2, mh / 2
-        padding1 = _app.cutout_height
-        padding2 = _app.navbar_height
+        padding1, padding2 = _app.cutout_supported_bar_heights
         spacing = dp(10)
 
         if left < ww:
