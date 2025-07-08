@@ -30,9 +30,9 @@ Builder.load_string('''
             pos: self.pos
 
     Image:
+        anim_delay: 1/20
         size_hint: None, None
         source: 'assets/images/loading.gif'
-        anim_delay: 1/20
 
 <DesktopApplications>:
     orientation: 'bt-rl' if platform == 'android' else 'tb-lr'
@@ -46,7 +46,7 @@ Builder.load_string('''
             rgba: 0, 0, 0, .3
         RoundedRectangle:
             pos: self.pos
-            radius: [dp(10), ]
+            radius: (dp(10), )
             size: self.size
 
     AppList:
@@ -54,13 +54,12 @@ Builder.load_string('''
         do_scroll_x: False
         BoxLayout:
             height: self.minimum_height
-            padding: [dp(5), ] * 4
+            padding: dp(5), dp(5)
             size_hint_y: None
             Applications:
-                size_hint_y: None
                 height: self.minimum_height
-                spacing: dp(3 if platform == 'android' else 20), \
-                         dp(0 if platform == 'android' else 10)
+                size_hint_y: None
+                spacing: dp(35), dp(5)
 ''')
 
 class ProgressHolder(ModalView):
@@ -78,9 +77,9 @@ class ProgressHolder(ModalView):
 
 class Applications(GetApps, StackLayout):  # type: ignore
     isbusy = BooleanProperty(False)
-    padding = ListProperty([dp(10), ] * 4)
+    padding = ListProperty((dp(10), dp(10), dp(10), dp(10)))
     popup = ObjectProperty()
-    spacing = ListProperty([dp(0), ] * 2)
+    spacing = ListProperty((dp(5), dp(5)))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

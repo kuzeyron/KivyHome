@@ -13,7 +13,7 @@
             size: self.size
             pos: self.pos
         Color:
-            rgba: 1, 1, 1, (1 if self._background_texture else 0)
+            rgba: 1, 1, 1, 1 if self._background_texture else 0
         Rectangle:
             texture: self._background_texture
             size: self.size
@@ -45,7 +45,7 @@
                         Color:
                             rgba: .5 ,.5 ,.5, .5
                         RoundedRectangle:
-                            radius: [dp(15), ]
+                            radius: (dp(15), )
                             size: self.size
                             pos: self.pos
                 
