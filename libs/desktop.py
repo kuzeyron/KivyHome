@@ -49,6 +49,6 @@ class Desktop(Carousel):
         if all([self.collide_point(*touch.pos),
                 self.initial > (self.height - (self.height / 2.5)),
                 touch.dy > 0]):
-            return KivyHome().change_direction(self.smdirection,
-                                               self.target)
+            return KivyHome().change_direction(orientation=self.smdirection,
+                                               target=self.target)
         return False

@@ -1,3 +1,4 @@
 .venv
 .cache
+.buildozer
 __pycache__
