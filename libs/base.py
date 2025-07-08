@@ -42,12 +42,10 @@ class KivyHome(BoxLayout):
         return True
 
     def display_cutout_supported(self, dt=None):
-        if platform == 'android':
+        if platform == 'android' and isinstance(App.get_running_app().root, KivyHome):
             from android.display_cutout import get_height_of_bar
-
-            if isinstance(App.get_running_app().root, KivyHome):
-                self.cutout_supported_bar_heights = [get_height_of_bar('status'),
-                                                     get_height_of_bar('navigation')]
+            self.cutout_supported_bar_heights = [get_height_of_bar('status'),
+                                                 get_height_of_bar('navigation')]
 
     def on_background_path(self, instance=None, background_path=None):
         if background_path or self.background_path:
