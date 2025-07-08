@@ -45,10 +45,10 @@ jobs:
           path: data
           ref: data # Branch name
 
-      - name: Set up Python
+      - name: Setup of Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.13
+          python-version: 3.11
           architecture: armeabi-v7a
 
       - name: Push binary to data branch
