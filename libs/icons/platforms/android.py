@@ -8,12 +8,12 @@ from threading import Thread
 
 from android.storage import app_storage_path
 from jnius import autoclass, cast
-from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.image import Image
 from kivy.logger import Logger
 
 from ..appicons import AppIcon
+from ...base import KivyHome
 
 __all__ = ('GetPackages', )
 
@@ -81,7 +81,7 @@ class GetPackages:
         Clock.schedule_once(partial(self.on_busy, False), 0)
 
     def add_one(self, *largs, **kwargs):
-        _app = App.get_running_app()
+        _app = KivyHome()
         texture = kwargs['texture']
 
         if not kwargs['old']:
