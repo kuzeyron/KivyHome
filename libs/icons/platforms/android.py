@@ -93,7 +93,7 @@ class GetPackages:
         if dtype :=  _app.desktop_icons.get(kwargs['package'], False):
             if dtype := dtype.get('dtype', kwargs.get('dtype', 'desk_apps')):
                 kwargs['dtype'] = dtype
-                instance = _app.root.ids[kwargs['dtype']]
+                instance = _app.ids[kwargs['dtype']]
                 instance.add_widget(AppIcon(**kwargs))
 
         self.add_widget(AppIcon(**kwargs))
