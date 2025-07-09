@@ -23,7 +23,7 @@ jobs:
           export APP_ANDROID_ACCEPT_SDK_LICENSE=1
           export BUILDOZER_WARN_ON_ROOT=0
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip python3-virtualenv autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev automake autopoint gettext
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip python3-virtualenv autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev automake autopoint gettext libltdl-dev
           cd ${{ github.workspace }}
           buildozer android debug
       - name: Upload artifacts
