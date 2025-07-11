@@ -3,7 +3,7 @@
 #:import Desktop libs.desktop.Desktop
 
 <KivyHome>:
-    padding: 0, self.cutout_supported_bar_heights[0], 0, 0
+    padding: 0, self.status_bar_height, 0, 0
     spacing: dp(2)
     orientation: 'vertical'
     canvas.before:
@@ -26,7 +26,7 @@
             name: 'main'
             BoxLayout:
                 orientation: 'vertical'
-                padding: 0, 0, 0, root.cutout_supported_bar_heights[1] + dp(5)
+                padding: 0, 0, 0, root.navigation_bar_height + dp(5)
                 spacing: dp(25)
                 Desktop:
                     id: desk

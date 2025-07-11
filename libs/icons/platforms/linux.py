@@ -14,7 +14,7 @@ from libs.base import KivyHome
 __all__ = ('GetPackages', )
 
 class GetPackages:
-    def on_kv_post(self, *largs):
+    def on_kv_post(self, _):
         Thread(target=self.ready, daemon=True).start()
 
     def ready(self):
@@ -46,9 +46,9 @@ class GetPackages:
                                 break
 
 
-        Clock.schedule_once(partial(self.on_busy, False), 0)
+        Clock.schedule_once(partial(self.on_busy, False), 1)
 
-    def add_one(self, *largs, **kwargs):
+    def add_one(self, _, **kwargs):
         _home = KivyHome()
         kwargs['texture'] = Image(kwargs['path'], mipmap=True).texture
         kwargs['arguments'] = kwargs
@@ -61,5 +61,5 @@ class GetPackages:
 
         self.add_widget(AppIcon(**kwargs))
 
-    def on_busy(self, status, extra=None):
+    def on_busy(self, status, _):
         self.popup.isbusy = status
