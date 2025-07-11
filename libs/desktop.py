@@ -8,14 +8,13 @@ class Desktop(Carousel):
     initial = NumericProperty()
     smdirection = StringProperty('up')
     target = StringProperty('all_apps')
-    scroll_distance = NumericProperty('100dp')
+    scroll_distance = NumericProperty('60dp')
     ignore_perpendicular_swipes = BooleanProperty(True)
 
-    def on__offset(self, *args):
+    def on__offset(self, _, _offset):
         self._trigger_position_visible_slides()
         # if reached full offset, switch index to next or prev
         direction = self.direction[0]
-        _offset = self._offset
         width = self.width
         index = self.index
         if self._skip_slide is not None or index is None:

@@ -19,33 +19,26 @@ __all__ = ('GetPackages', )
 
 
 class GetPackages:
-    __events__ = ('on_draw_content', )
-
-    def on_kv_post(self, *largs):
+    def on_kv_post(self, _):
         Thread(target=self.ready, daemon=True).start()
 
     def ready(self):
         Clock.schedule_once(partial(self.on_busy, True), 0)
         Intent = autoclass('android.content.Intent')
         PythonActivity = autoclass('org.kivy.android.PythonActivity')
-        intent = Intent()
-        intent.setAction(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_LAUNCHER)
-        context = cast('android.content.Context',
-                       PythonActivity.mActivity)
-
-        pm = context.getPackageManager()
-        packages = pm.queryIntentActivities(intent, 0).toArray()
-
-        self.dispatch('on_draw_content', pm, packages)
-
-    def on_draw_content(self, pm, domains):
-        """ Code by AnshDadwal """
         OutputStream = autoclass('java.io.ByteArrayOutputStream')
         Bitmap = autoclass("android.graphics.Bitmap")
         Canvas = autoclass("android.graphics.Canvas")
         BitmapConfig = autoclass("android.graphics.Bitmap$Config")
         CompressFormat = autoclass("android.graphics.Bitmap$CompressFormat")
+
+        intent = Intent()
+        intent.setAction(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        context = cast('android.content.Context',
+                       PythonActivity.mActivity)
+        pm = context.getPackageManager()
+        domains = pm.queryIntentActivities(intent, 0).toArray()
         cache_folder = join(app_storage_path(), '.cache', 'icons')
         makedirs(cache_folder, exist_ok=True)
 
@@ -78,10 +71,10 @@ class GetPackages:
                                         package=package, texture=image,
                                         old=old, path=filename), 0)
 
-        Clock.schedule_once(partial(self.on_busy, False), 0)
+        Clock.schedule_once(partial(self.on_busy, False), 1)
 
-    def add_one(self, *largs, **kwargs):
-        _app = KivyHome()
+    def add_one(self, _, **kwargs):
+        _home = KivyHome()
         texture = kwargs['texture']
 
         if not kwargs['old']:
@@ -90,13 +83,13 @@ class GetPackages:
         kwargs['arguments'] = kwargs
         kwargs['texture'] = texture.texture
 
-        if dtype :=  _app.desktop_icons.get(kwargs['package'], False):
+        if dtype :=  _home.desktop_icons.get(kwargs['package'], False):
             if dtype := dtype.get('dtype', kwargs.get('dtype', 'desk_apps')):
                 kwargs['dtype'] = dtype
-                instance = _app.ids[kwargs['dtype']]
+                instance = _home.ids[kwargs['dtype']]
                 instance.add_widget(AppIcon(**kwargs))
 
         self.add_widget(AppIcon(**kwargs))
  
-    def on_busy(self, status, *largs):
+    def on_busy(self, status, _):
         self.popup.isbusy = status

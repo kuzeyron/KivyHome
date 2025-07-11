@@ -1,5 +1,6 @@
 from kivy.app import App
-from kivy.properties import (ColorProperty, DictProperty, ListProperty,
+from kivy.clock import Clock
+from kivy.properties import (ColorProperty, DictProperty, NumericProperty,
                              ObjectProperty, StringProperty)
 from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import platform
@@ -16,20 +17,15 @@ class KivyHome(BoxLayout):
     _instance: object = None
     background_color = ColorProperty((.243, .258, .27, 1))
     background_path = StringProperty('assets/wallpapers/default_wallpaper.jpeg', allownone=True)
-    cutout_supported_bar_heights = ListProperty((0, 0))
     desktop_icons = DictProperty()
+    navigation_bar_height = NumericProperty()
+    status_bar_height = NumericProperty()
 
     def __init__(self, **kwargs):
         if not self._initialized:  # init once
             self._initialized = True
             super().__init__(**kwargs)
-
-    def on_kv_post(self, instance=None, value=None):
-        if not self._background_texture:
-            self.on_background_path()
-        self.display_cutout_supported()
-        self.desktop_icons = retrieve_favorite_apps()
-        self.bind(desktop_icons=self.store_desktop_data)
+            Clock.schedule_once(self._setup, 0)
 
     def store_desktop_data(self, instance=None, value=None):
         store_favorite_apps(config=self.desktop_icons)
@@ -41,11 +37,16 @@ class KivyHome(BoxLayout):
 
         return True
 
-    def display_cutout_supported(self, dt=None):
+    def _setup(self, dt=None):
+        self.on_background_path()
+        self.desktop_icons = retrieve_favorite_apps()
+        self.bind(desktop_icons=self.store_desktop_data)
+
         if platform == 'android' and isinstance(App.get_running_app().root, KivyHome):
-            from android.display_cutout import get_height_of_bar
-            self.cutout_supported_bar_heights = [get_height_of_bar('status'),
-                                                 get_height_of_bar('navigation')]
+            from android.display_cutout import get_cutout_mode, get_height_of_bar
+            if get_cutout_mode() != 'never':
+                self.status_bar_height += get_height_of_bar('status')
+                self.navigation_bar_height += get_height_of_bar('navigation')
 
     def on_background_path(self, instance=None, background_path=None):
         if background_path or self.background_path:

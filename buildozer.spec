@@ -155,11 +155,14 @@ android.accept_sdk_license = True
 # (str) Full name including package path of the Java class that implements Python Service
 # use that parameter to set custom Java class instead of PythonService
 #android.service_class_name = org.kivy.android.PythonService
+
 android.home_app = True
+
 # (str) Android app theme, default is ok for Kivy-based app
 # android.apptheme = "@android:style/Theme.NoTitleBar"
 
 android.display_cutout = shortEdges
+
 # (list) Pattern to whitelist for the whole project
 #android.whitelist =
 

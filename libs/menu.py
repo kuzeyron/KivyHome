@@ -140,7 +140,8 @@ class ModalView(FloatLayout):
         ww, wh = Window.size
         left, bottom = xp + mw, yp + mh
         hw, w2 = mw / 2, mh / 2
-        padding1, padding2 = _app.cutout_supported_bar_heights
+        padding1 = _app.status_bar_height
+        padding2 = _app.navigation_bar_height
         spacing = dp(10)
 
         if left < ww:
