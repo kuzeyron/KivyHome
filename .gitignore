@@ -1,4 +1,6 @@
-.venv
-.cache
 .buildozer
+.cache
+.venv
+venv
 __pycache__
+bin
