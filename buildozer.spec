@@ -13,7 +13,7 @@ package.domain = org.kuzeyron
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,jpeg,webp,kv,atlas,json,ttf,po,mo,kj,dbk,ktxt,gif
+source.include_exts = py,png,jpg,jpeg,webp,kv,atlas,json
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
@@ -37,7 +37,7 @@ version = 0.2.0
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,pillow,android
+requirements = python3,kivy,android
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes

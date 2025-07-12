@@ -8,14 +8,15 @@ from kivy.uix.modalview import ModalView
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.stacklayout import StackLayout
 from kivy.utils import platform
-
+from kivy.graphics import Color, Ellipse
+from kivy.uix.progressbar import ProgressBar
 from ..base import KivyHome
 from ..utils import importer
 
 __all__ = ('Applications', 'AppContainer', 'AppList', )
 
 GetApps = importer(f'libs.icons.platforms.{platform}', 'GetPackages')
-Builder.load_string('''
+KV = '''
 #:import platform kivy.utils.platform
 
 <ProgressHolder>:
@@ -28,10 +29,8 @@ Builder.load_string('''
             size: self.size
             pos: self.pos
 
-    Image:
-        anim_delay: 1/20
-        size_hint: None, None
-        source: 'assets/images/loading.gif'
+    CircularProgressBar:
+        size_hint: .5, .5
 
 <DesktopApplications>:
     orientation: 'bt-rl' if platform == 'android' else 'tb-lr'
@@ -55,7 +54,7 @@ Builder.load_string('''
                 self.height, dp(10)
 
     AppList:
-        bar_width: dp(3)
+        bar_width: dp(10)
         do_scroll_x: False
         BoxLayout:
             padding: 0, 0, 0, root.navigation_bar_height
@@ -65,7 +64,38 @@ Builder.load_string('''
                 height: self.minimum_height
                 size_hint_y: None
                 spacing: dp(20 if platform == 'android' else 35), dp(5)
-''')
+'''
+
+
+class CircularProgressBar(ProgressBar):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.thickness = dp(40)
+        self.draw()
+
+    def draw(self):
+        max_size = min(self.size)
+        
+        with self.canvas:
+            self.canvas.clear()
+
+            Color(.26, .26, .26)
+            Ellipse(pos=(self.center_x - max_size / 2, self.center_y - max_size / 2),
+                    size=(max_size, max_size))
+
+            Color(.2, .2, .5)
+            Ellipse(pos=(self.center_x - max_size / 2, self.center_y - max_size / 2),
+                    size=(max_size, max_size), angle_start=0, angle_end=(float(self.value_normalized * 360)))
+
+            Color(0, 0, 0)
+            inner_diameter = max_size - self.thickness
+            Ellipse(pos=(self.center_x - inner_diameter / 2, self.center_y - inner_diameter / 2),
+                    size=(inner_diameter, inner_diameter))
+
+    def set_value(self, value):
+        self.value = value + 1
+        self.draw()
+
 
 class ProgressHolder(ModalView):
     isbusy = BooleanProperty(None)
@@ -94,7 +124,7 @@ class AppList(ScrollView):
     __events__ = ('on_event', )
     direction = StringProperty('down')
     do_scroll_x = BooleanProperty(False)
-    pressure = NumericProperty(4)
+    pressure = NumericProperty(3)
     target = StringProperty('main')
 
     def on_scroll_y(self, _, value):
@@ -125,4 +155,6 @@ class AppContainer(BoxLayout):
 
 
 class DesktopApplications(StackLayout):
-    pass
+    def __init__(self, **kwargs):
+        Builder.load_string(KV)
+        super().__init__(**kwargs)
