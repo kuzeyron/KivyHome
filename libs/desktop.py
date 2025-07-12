@@ -5,10 +5,10 @@ from .base import KivyHome
 __all__ = ('Desktop', )
 
 class Desktop(Carousel):
-    initial = NumericProperty()
+    initial = 0
     smdirection = StringProperty('up')
     target = StringProperty('all_apps')
-    scroll_distance = NumericProperty('60dp')
+    scroll_distance = NumericProperty('20dp')
     ignore_perpendicular_swipes = BooleanProperty(True)
 
     def on__offset(self, _, _offset):
@@ -45,9 +45,8 @@ class Desktop(Carousel):
 
     def on_touch_up(self, touch):
         super().on_touch_up(touch)
-        if all([self.collide_point(*touch.pos),
-                self.initial > (self.height - (self.height / 2.5)),
-                touch.dy > 0]):
+        if self.collide_point(*touch.pos) and self.initial > (self.height - (self.height / 2.5)) \
+            and touch.dy >= 0:
             return KivyHome().change_direction(orientation=self.smdirection,
                                                target=self.target)
         return False

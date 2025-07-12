@@ -43,10 +43,9 @@ class KivyHome(BoxLayout):
         self.bind(desktop_icons=self.store_desktop_data)
 
         if platform == 'android' and isinstance(App.get_running_app().root, KivyHome):
-            from android.display_cutout import get_cutout_mode, get_height_of_bar
-            if get_cutout_mode() != 'never':
-                self.status_bar_height += get_height_of_bar('status')
-                self.navigation_bar_height += get_height_of_bar('navigation')
+            from android.display_cutout import get_cutout_mode, get_heights_of_both_bars
+            if get_cutout_mode() not in {None, 'never'}:
+                self.status_bar_height, self.navigation_bar_height = get_heights_of_both_bars()
 
     def on_background_path(self, instance=None, background_path=None):
         if background_path or self.background_path:

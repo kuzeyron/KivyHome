@@ -9,8 +9,8 @@ from .buttonbehavior import LongPress
 Builder.load_string('''
 <AppIcon>:
     orientation: 'vertical'
-    size_hint: None, None
     size: dp(63), dp(83)
+    size_hint: None, None
     Widget:
         size: dp(63), dp(63)
         size_hint: None, None
@@ -22,13 +22,18 @@ Builder.load_string('''
                 radius: (dp(15), )
                 segments: 20
                 size: self.width - dp(4), self.height - dp(4)
-                texture: root.texture
+                texture: root.texture.texture
     Label:
         color: 1, 1, 1, .8
-        font_size: dp(9.5)
-        size_hint_y: None
+        font_size: dp(10)
+        halign: 'center'
         height: dp(12)
+        max_lines: 1
+        shorten: True
+        size: self.texture_size
+        size_hint_y: None
         text: root.name
+        text_size: root.width, None
 ''')
 
 
@@ -37,11 +42,10 @@ class AppIcon(LongPress, BoxLayout):
     old = BooleanProperty()
     package = StringProperty()
     path = StringProperty()
-    texture = ObjectProperty(None, allownone=True)
+    texture = ObjectProperty()
     listing = StringProperty()
     arguments = DictProperty()
     dtype = StringProperty('desk_favs')
 
-    def on_execution(self, *largs):
-        super().on_execution(*largs)
+    def on_execution(self):
         launch_app(self.package)

@@ -8,7 +8,7 @@ from threading import Thread
 
 from android.storage import app_storage_path
 from jnius import autoclass, cast
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.core.image import Image
 from kivy.logger import Logger
 
@@ -23,7 +23,6 @@ class GetPackages:
         Thread(target=self.ready, daemon=True).start()
 
     def ready(self):
-        Clock.schedule_once(partial(self.on_busy, True), 0)
         Intent = autoclass('android.content.Intent')
         PythonActivity = autoclass('org.kivy.android.PythonActivity')
         OutputStream = autoclass('java.io.ByteArrayOutputStream')
@@ -41,13 +40,16 @@ class GetPackages:
         domains = pm.queryIntentActivities(intent, 0).toArray()
         cache_folder = join(app_storage_path(), '.cache', 'icons')
         makedirs(cache_folder, exist_ok=True)
+        self.amount_of_applications = len(domains)
+        Clock.schedule_once(partial(self.on_busy, True), 0)
+        self._home = KivyHome()
 
         if time.time() - getmtime(cache_folder) >= 259200:
             rmtree(cache_folder)
             Logger.debug('Deleted cached icons')
             makedirs(cache_folder, exist_ok=True)
 
-        for domain in domains:
+        for step, domain in enumerate(domains, 1):
             package = domain.activityInfo.packageName
             info = pm.getApplicationInfo(package, pm.GET_META_DATA)
             name = pm.getApplicationLabel(info)
@@ -67,29 +69,26 @@ class GetPackages:
                 Logger.debug('Loading icon: %s', filename)
                 image = Image(filename)
 
-            Clock.schedule_once(partial(self.add_one, name=name,
-                                        package=package, texture=image,
-                                        old=old, path=filename), 0)
+            self.add_one(step, name=name, package=package, texture=image, old=old, path=filename)
 
         Clock.schedule_once(partial(self.on_busy, False), 1)
 
-    def add_one(self, _, **kwargs):
-        _home = KivyHome()
-        texture = kwargs['texture']
+    @mainthread
+    def add_one(self, step, **kwargs):
+        self.popup.children[0].set_value(step)
 
         if not kwargs['old']:
-            texture.save(kwargs['path'], flipped=False)
+            kwargs['texture'].save(kwargs['path'], flipped=False)
         
         kwargs['arguments'] = kwargs
-        kwargs['texture'] = texture.texture
 
-        if dtype :=  _home.desktop_icons.get(kwargs['package'], False):
-            if dtype := dtype.get('dtype', kwargs.get('dtype', 'desk_apps')):
-                kwargs['dtype'] = dtype
-                instance = _home.ids[kwargs['dtype']]
-                instance.add_widget(AppIcon(**kwargs))
+        if dtype :=  self._home.desktop_icons.get(kwargs['package'], {}).get('dtype'):
+            kwargs['dtype'] = dtype
+            instance = self._home.ids[kwargs['dtype']]
+            instance.add_widget(AppIcon(**kwargs))
 
         self.add_widget(AppIcon(**kwargs))
  
     def on_busy(self, status, _):
         self.popup.isbusy = status
+        self.popup.children[0].max = self.amount_of_applications
