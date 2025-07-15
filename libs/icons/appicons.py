@@ -1,10 +1,10 @@
 from kivy.lang import Builder
-from kivy.properties import (BooleanProperty, DictProperty, ObjectProperty,
-                             StringProperty)
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from .applauncher import launch_app
 from .buttonbehavior import LongPress
+
 
 Builder.load_string('''
 <AppIcon>:
@@ -38,14 +38,14 @@ Builder.load_string('''
 
 
 class AppIcon(LongPress, BoxLayout):
+    arguments: dict = {}
+    dtype = StringProperty('desk_favs')
+    listing: str = ''
     name = StringProperty()
-    old = BooleanProperty()
+    old: bool = False
     package = StringProperty()
     path = StringProperty()
     texture = ObjectProperty()
-    listing = StringProperty()
-    arguments = DictProperty()
-    dtype = StringProperty('desk_favs')
 
     def on_execution(self):
         launch_app(self.package)

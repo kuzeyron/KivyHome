@@ -90,5 +90,5 @@ class GetPackages:
         self.add_widget(AppIcon(**kwargs))
  
     def on_busy(self, status, _):
-        self.popup.isbusy = status
         self.popup.children[0].max = self.amount_of_applications
+        self.popup.isbusy = status
