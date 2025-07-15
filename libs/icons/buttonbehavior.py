@@ -5,7 +5,7 @@ from kivy.clock import Clock, mainthread
 from kivy.factory import Factory
 from kivy.lang import Builder
 from kivy.properties import (BooleanProperty, DictProperty, NumericProperty,
-                             ObjectProperty, StringProperty)
+                             StringProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.label import Label
 
@@ -72,46 +72,46 @@ Builder.load_string('''
 class AppMenuButton(ButtonBehavior, Label):
     dtype = StringProperty('desk_apps')
 
-    def add(self, package):
-        _app = KivyHome()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._app = KivyHome()
 
-        if package not in _app.desktop_icons:
+    def add(self, package):
+        if package not in self._app.desktop_icons:
             collection = self.parent.parent.arguments
             collection.update(dict(dtype=self.dtype))
-            _app.desktop_icons.update({package: collection})
-            instance = _app.ids[self.dtype]
+            self._app.desktop_icons.update({package: collection})
+            instance = self._app.ids[self.dtype]
             instance.add_widget(Factory.AppIcon(**collection))
 
     def remove(self, package):
-        _app = KivyHome()
-
-        if dtype :=  _app.desktop_icons.get(package, False):
+        if dtype :=  self._app.desktop_icons.get(package, False):
             if dtype := dtype.get('dtype', self.dtype):
-                del _app.desktop_icons[package]
-                instance = _app.root.ids[dtype]
+                del self._app.desktop_icons[package]
+                instance = self._app.ids[dtype]
                 for child in instance.children:
                     if child.package == package:
                         instance.remove_widget(child)
 
 
 class AppMenu(ModalView):
-    package = StringProperty()
+    package: str = ''
     app_name = StringProperty()
-    caller = ObjectProperty(None, allownone=True)
-    arguments = DictProperty()
+    caller = None
+    arguments: dict = {}
 
 
 class LongPress(ButtonBehavior):
     __events__ = ('on_execution', 'on_menu', 'on_trigger', )
-    _vib = ObjectProperty(None, allownone=True)
+    _vib = None
     always_release = BooleanProperty(True)
-    color_opacity = NumericProperty(1.)
-    long_tick = NumericProperty(1)
-    count = NumericProperty(0)
-    isfree = BooleanProperty(True)
     arguments = DictProperty()
+    color_opacity = NumericProperty(1.)
+    count: int = 0
+    isfree: bool = True
+    long_tick: float = 1.
 
-    def on_state(self, instance, state):
+    def on_state(self, _, state):
         touch = self.last_touch.button
         if state == 'down' and touch in {'left', None}:
             self.color_opacity = .5
@@ -125,7 +125,7 @@ class LongPress(ButtonBehavior):
             self._clock.cancel()
             self.isfree = False
 
-    def stop_counting(self, *largs):
+    def stop_counting(self, _=None, value=None):
         self.isfree = False
 
     def start_counting(self):
@@ -141,7 +141,7 @@ class LongPress(ButtonBehavior):
         super().on_touch_move(touch)
 
     @mainthread
-    def on_trigger(self, *largs):
+    def on_trigger(self):
         if .01 < self.count < .1:
             self.dispatch('on_execution')
             self._vib = vibrate(.05)
@@ -152,7 +152,7 @@ class LongPress(ButtonBehavior):
     def on_execution(self, *largs):
         self.count = 0
 
-    def on_menu(self, *largs):
+    def on_menu(self):
         menu = AppMenu()
         menu.package = self.package
         menu.app_name = self.name
@@ -163,6 +163,6 @@ class LongPress(ButtonBehavior):
         menu.open()
         self.count = 0
 
-    def on_release(self, *largs):
+    def on_release(self):
         if self._vib is not None:
             self._vib.cancel()
