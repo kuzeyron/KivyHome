@@ -62,5 +62,3 @@ class GetPackages:
                 image = Image(filename)
 
             self.add_one(step, name=name, package=package, texture=image, old=old, path=filename)
-
-        self.dispatch('on_busy', False)
