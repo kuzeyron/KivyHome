@@ -1,11 +1,10 @@
 import json
 import sys
 from os import makedirs
-from os.path import abspath, dirname, exists, join
+from os.path import exists, join
 
 from kivy.utils import platform
 
-from libs.utils import importer
 
 __all__ = ('get_default_path', 'get_default_file', 'write_to_file',
            'reset', 'file_exists', 'retrieve_favorite_apps',
@@ -13,9 +12,10 @@ __all__ = ('get_default_path', 'get_default_file', 'write_to_file',
 
 def get_default_path():
     if platform == 'android':
-        return importer('android.storage', 'app_storage_path')()
+        from android.storage import app_storage_path
+        return app_storage_path()
 
-    return dirname(abspath(sys.argv[0]))
+    return sys.path[0]
 
 
 def get_default_file():
@@ -51,12 +51,13 @@ def store_favorite_apps(file=None, config=None):
     if isinstance(config, dict):
         # Workaround since deepcopy doesn't work with
         # properties from kivy
+        interesting = ('package', 'name', 'dtype')
         content = {}
 
         for k, v in config.items():
             if isinstance(v, dict):
                 for kk, vv in v.items():
-                    if kk in ('package', 'name', 'dtype'):
+                    if kk in interesting:
                         if k not in content:
                             content[k] = {}
                         content[k][kk] = vv
