@@ -1,30 +1,21 @@
 import time
-from functools import partial
 from io import BytesIO
 from os import makedirs
 from os.path import getmtime, isfile, join
 from shutil import rmtree
-from threading import Thread
 
 from android.storage import app_storage_path
 from jnius import autoclass, cast
-from kivy.clock import Clock, mainthread
+
 from kivy.core.image import Image
 from kivy.logger import Logger
 
-from ..appicons import AppIcon
-from ...base import KivyHome
-
 __all__ = ('GetPackages', )
-
 
 class GetPackages:
     apps_path: str = None
 
-    def on_kv_post(self, _):
-        Thread(target=self.ready, daemon=True).start()
-
-    def ready(self):
+    def find_applications(self):
         Intent = autoclass('android.content.Intent')
         PythonActivity = autoclass('org.kivy.android.PythonActivity')
         OutputStream = autoclass('java.io.ByteArrayOutputStream')
@@ -43,8 +34,7 @@ class GetPackages:
         cache_folder = join(app_storage_path(), '.cache', 'icons')
         makedirs(cache_folder, exist_ok=True)
         self.amount_of_applications = len(domains)
-        Clock.schedule_once(partial(self.on_busy, True), 0)
-        self._home_widget = KivyHome()
+        self.dispatch('on_busy', True)
 
         if time.time() - getmtime(cache_folder) >= 259200:
             rmtree(cache_folder)
@@ -73,24 +63,4 @@ class GetPackages:
 
             self.add_one(step, name=name, package=package, texture=image, old=old, path=filename)
 
-        Clock.schedule_once(partial(self.on_busy, False), 0)
-
-    @mainthread
-    def add_one(self, step, **kwargs):
-        self.popup.children[0].set_value(step)
-
-        if not kwargs['old']:
-            kwargs['texture'].save(kwargs['path'], flipped=False)
-        
-        kwargs['arguments'] = kwargs
-
-        if dtype :=  self._home_widget.desktop_icons.get(kwargs['package'], {}).get('dtype'):
-            kwargs['dtype'] = dtype
-            instance = self._home_widget.ids[kwargs['dtype']]
-            instance.add_widget(AppIcon(**kwargs))
-
-        self.add_widget(AppIcon(**kwargs))
- 
-    def on_busy(self, status, _):
-        self.popup.children[0].max = self.amount_of_applications
-        self.popup.isbusy = status
+        self.dispatch('on_busy', False)

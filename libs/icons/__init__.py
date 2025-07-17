@@ -1,33 +1,32 @@
+from threading import Thread
+
 from kivy.animation import Animation
+from kivy.clock import mainthread
+from kivy.graphics import Color, Ellipse
 from kivy.lang import Builder
-from kivy.metrics import dp
-from kivy.properties import (BooleanProperty, ListProperty, NumericProperty,
-                             ObjectProperty, StringProperty)
+from kivy.properties import BooleanProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.modalview import ModalView
-from kivy.uix.scrollview import ScrollView
+from kivy.uix.progressbar import ProgressBar
 from kivy.uix.stacklayout import StackLayout
 from kivy.utils import platform
-from kivy.graphics import Color, Ellipse
-from kivy.uix.progressbar import ProgressBar
+
+from .appicons import AppIcon
 from ..base import KivyHome
-from ..utils import importer
 
-__all__ = ('Applications', 'AppContainer', 'AppList', )
+__all__ = ('Applications', 'AppContainer', 'AppList')
 
-GetApps = importer(f'libs.icons.platforms.{platform}', 'GetPackages')
+if platform == 'android':
+    from .platforms.android import GetPackages
+else:
+    from .platforms.linux import GetPackages
+
 KV = '''
 #:import platform kivy.utils.platform
 
 <ProgressHolder>:
     auto_dismiss: False
     background_color: .2, .2, .5, 0
-    canvas.before:
-        Color:
-            rgba: 0, 0, 0, self.opacity
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
 
     CircularProgressBar:
         size_hint: .5, .5
@@ -50,30 +49,28 @@ KV = '''
             rgba: 1, 1, 1, .1
         SmoothLine:
             width: dp(1)
-            rounded_rectangle: self.x, self.y, self.width, \
-                self.height, dp(10)
+            rounded_rectangle: self.x, self.y, self.width, self.height, dp(10)
 
-    AppList:
+    ScrollView:
         bar_width: dp(10)
         do_scroll_x: False
-        BoxLayout:
-            padding: 0, 0, 0, root.navigation_bar_height
+        on_scroll_y: root.on_scroll_y(*args)
+        Applications:
+            padding: dp(10), dp(10), dp(10), root.navigation_bar_height + dp(20)
             height: self.minimum_height
             size_hint_y: None
-            Applications:
-                height: self.minimum_height
-                size_hint_y: None
-                spacing: dp(20 if platform == 'android' else 35), dp(5)
+            spacing: dp(20 if platform == 'android' else 35), dp(5)
 '''
 
 
 class CircularProgressBar(ProgressBar):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.thickness = dp(40)
-        self.draw()
+    __events__ = ('on_draw', )
+    thickness = NumericProperty('40dp')
 
-    def draw(self):
+    def on_kv_post(self, _):
+        self.dispatch('on_draw')
+
+    def on_draw(self):
         max_size = min(self.size)
         
         with self.canvas:
@@ -87,19 +84,18 @@ class CircularProgressBar(ProgressBar):
             Ellipse(pos=(self.center_x - max_size / 2, self.center_y - max_size / 2),
                     size=(max_size, max_size), angle_start=0, angle_end=(float(self.value_normalized * 360)))
 
-            Color(0, 0, 0)
+            Color(0, 0, 0, .6)
             inner_diameter = max_size - self.thickness
             Ellipse(pos=(self.center_x - inner_diameter / 2, self.center_y - inner_diameter / 2),
                     size=(inner_diameter, inner_diameter))
 
     def set_value(self, value):
         self.value = value + 1
-        self.draw()
+        self.dispatch('on_draw')
 
 
 class ProgressHolder(ModalView):
     isbusy = BooleanProperty(None)
-    opacity = NumericProperty(.6)
 
     def on_isbusy(self, _, busy):
         if busy:
@@ -110,48 +106,63 @@ class ProgressHolder(ModalView):
             a.start(self)
 
 
-class Applications(GetApps, StackLayout):  # type: ignore
+class Applications(GetPackages, StackLayout):
+    __events__ = ('on_busy', )
     isbusy = BooleanProperty(False)
-    padding = ListProperty((dp(10), dp(10), dp(10), dp(20)))
-    popup = ObjectProperty()
 
     def __init__(self, **kwargs):
-        self.popup = ProgressHolder()
         super().__init__(**kwargs)
+        self.popup = ProgressHolder()
+        self._home_widget = KivyHome()
 
+    def on_kv_post(self, _):
+        Thread(target=self.find_applications, daemon=True).start()
 
-class AppList(ScrollView):
-    __events__ = ('on_event', )
-    direction = StringProperty('down')
-    do_scroll_x = BooleanProperty(False)
-    pressure = NumericProperty(3)
-    target = StringProperty('main')
+    @mainthread
+    def add_one(self, step: int, **kwargs):
+        self.popup.children[0].set_value(step)
 
-    def on_scroll_y(self, _, value):
-        if any((
-                self._viewport.height >= self.height and value >= self.pressure,
-                value < -self.pressure and platform != 'android'
-        )):
-            # all, can scroll
-            # all, revert direction on Linux when no room to scroll (fails in maximized window)
-            self.dispatch('on_event')
+        if not kwargs['old']:
+            kwargs['texture'].save(kwargs['path'], flipped=False)
+        
+        kwargs['arguments'] = kwargs
 
-    def on_event(self):
-        KivyHome().change_direction(orientation=self.direction,
-                                    target=self.target)
+        if dtype :=  self._home_widget.desktop_icons.get(kwargs['package'], {}).get('dtype'):
+            kwargs['dtype'] = dtype
+            instance = self._home_widget.ids[kwargs['dtype']]
+            instance.add_widget(AppIcon(**kwargs))
+
+        self.add_widget(AppIcon(**kwargs))
+ 
+    @mainthread
+    def on_busy(self, status: bool):
+        self.popup.children[0].max = self.amount_of_applications
+        self.popup.isbusy = status
+
 
 
 class AppContainer(BoxLayout):
     navigation_bar_height = NumericProperty()
+    scroll_direction: str = 'down'
+    scroll_pressure: int = 3
+    scroll_target: str = 'main'
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.home = KivyHome()
-        self.navigation_bar_height = self.home.navigation_bar_height
-        self.home.bind(navigation_bar_height=self.set_navigation_bar_height)
+    def on_kv_post(self, _):
+        self.home_widget = KivyHome()
+        self.navigation_bar_height = self.home_widget.navigation_bar_height
+        self.home_widget.bind(navigation_bar_height=self.set_navigation_bar_height)
 
     def set_navigation_bar_height(self, _, height):
         self.navigation_bar_height = height
+
+    def on_scroll_y(self, instance, value):
+        if any((
+                instance._viewport.height >= self.height and value >= self.scroll_pressure,
+                value < -self.scroll_pressure and platform != 'android'
+        )):
+            # all, can scroll
+            # all, revert direction on Linux when no room to scroll (fails in maximized window)
+            self.home_widget.change_direction(orientation=self.scroll_direction, target=self.scroll_target)
 
 
 class DesktopApplications(StackLayout):

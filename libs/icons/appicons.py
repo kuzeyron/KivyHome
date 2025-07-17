@@ -1,5 +1,5 @@
 from kivy.lang import Builder
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty, StringProperty, BooleanProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from .applauncher import launch_app
@@ -20,7 +20,6 @@ Builder.load_string('''
             RoundedRectangle:
                 pos: self.x + dp(2), self.y + dp(2)
                 radius: (dp(15), )
-                segments: 20
                 size: self.width - dp(4), self.height - dp(4)
                 texture: root.texture.texture
     Label:
@@ -42,7 +41,7 @@ class AppIcon(LongPress, BoxLayout):
     dtype = StringProperty('desk_favs')
     listing: str = ''
     name = StringProperty()
-    old: bool = False
+    old = BooleanProperty()
     package = StringProperty()
     path = StringProperty()
     texture = ObjectProperty()

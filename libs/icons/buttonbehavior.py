@@ -102,7 +102,7 @@ class AppMenu(ModalView):
 
 
 class LongPress(ButtonBehavior):
-    __events__ = ('on_execution', 'on_menu', 'on_trigger', )
+    __events__ = ('on_execution', 'on_menu', 'on_trigger')
     _vib = None
     always_release = BooleanProperty(True)
     arguments = DictProperty()
