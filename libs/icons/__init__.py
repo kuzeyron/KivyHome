@@ -23,6 +23,7 @@ else:
 
 Builder.load_string('''
 #:import platform kivy.utils.platform
+#:import SwipeToHome libs.effect.SwipeToHome
 
 <ProgressHolder>:
     auto_dismiss: False
@@ -52,9 +53,9 @@ Builder.load_string('''
             rounded_rectangle: self.x, self.y, self.width, self.height, dp(10)
 
     ScrollView:
+        effect_cls: SwipeToHome
         bar_width: dp(10)
         do_scroll_x: False
-        on_scroll_y: root.on_scroll_y(*args)
 
         Applications:
             padding: dp(10), dp(10), dp(10), root.navigation_bar_height + dp(20)
@@ -143,9 +144,6 @@ class Applications(GetPackages, StackLayout):
 
 class AppContainer(BoxLayout):
     navigation_bar_height = NumericProperty()
-    scroll_direction: str = 'down'
-    scroll_pressure: int = 3
-    scroll_target: str = 'main'
 
     def on_kv_post(self, _) -> None:
         self._home_widget = KivyHome()
@@ -154,15 +152,6 @@ class AppContainer(BoxLayout):
 
     def set_navigation_bar_height(self, _, height) -> None:
         self.navigation_bar_height = height
-
-    def on_scroll_y(self, instance, value) -> None:
-        if any((
-                instance._viewport.height >= self.height and value >= self.scroll_pressure,
-                value < -self.scroll_pressure and platform != 'android'
-        )):
-            # all, can scroll
-            # all, revert direction on Linux when no room to scroll (fails in maximized window)
-            self._home_widget.change_direction(orientation=self.scroll_direction, target=self.scroll_target)
 
 
 class DesktopApplications(StackLayout):
