@@ -69,10 +69,10 @@ class CircularProgressBar(ProgressBar):
     __events__ = ('on_draw', )
     thickness = NumericProperty('40dp')
 
-    def on_kv_post(self, _):
+    def on_kv_post(self, _) -> None:
         self.dispatch('on_draw')
 
-    def on_draw(self):
+    def on_draw(self) -> None:
         max_size = min(self.size)
 
         with self.canvas:
@@ -91,7 +91,7 @@ class CircularProgressBar(ProgressBar):
             Ellipse(pos=(self.center_x - inner_diameter / 2, self.center_y - inner_diameter / 2),
                     size=(inner_diameter, inner_diameter))
 
-    def set_value(self, value):
+    def set_value(self, value: int) -> None:
         self.value = value + 1
         self.dispatch('on_draw')
 
@@ -99,7 +99,7 @@ class CircularProgressBar(ProgressBar):
 class ProgressHolder(ModalView):
     isbusy = BooleanProperty(None)
 
-    def on_isbusy(self, _, busy):
+    def on_isbusy(self, _, busy: bool):
         if busy:
             self.open()
         else:
@@ -150,7 +150,7 @@ class AppContainer(BoxLayout):
         self.navigation_bar_height = self._home_widget.navigation_bar_height
         self._home_widget.bind(navigation_bar_height=self.set_navigation_bar_height)
 
-    def set_navigation_bar_height(self, _, height) -> None:
+    def set_navigation_bar_height(self, _, height: float) -> None:
         self.navigation_bar_height = height
 
 

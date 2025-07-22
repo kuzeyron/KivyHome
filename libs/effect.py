@@ -1,15 +1,10 @@
 from kivy.effects.dampedscroll import DampedScrollEffect
-from kivy.properties import BooleanProperty
 from kivy.utils import platform
 
 from libs.base import KivyHome
 
 class SwipeToHome(DampedScrollEffect):
-    go_home = BooleanProperty(False)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._home_widget = KivyHome()
+    _ready_to_go_home: bool = True
 
     def update_velocity(self, dt):
         if abs(self.velocity) <= self.min_velocity and self.overscroll == 0:
@@ -25,7 +20,8 @@ class SwipeToHome(DampedScrollEffect):
             total_force += self.overscroll * self.spring_constant
         else:
             self.overscroll = 0
-            self.go_home = False
+            self.target_widget.disabled = False
+            self._ready_to_go_home = True
 
         stop_overscroll = ''
         if not self.is_manual:
@@ -52,14 +48,15 @@ class SwipeToHome(DampedScrollEffect):
         alpha_pressure = .8 if platform == 'android' else .6
         alpha = float(1. - abs(overscroller))
 
+        self.target_widget.disabled = True
         self.target_widget.opacity = min(1, alpha)
 
-        if alpha_pressure > alpha and overscroller < 0:
-            self.go_home = True
+        if all((alpha_pressure > alpha,
+                overscroller < 0,
+                self._ready_to_go_home
+        )):
+            self._ready_to_go_home = False
+            KivyHome().change_direction(orientation='down',
+                                        target='main')
 
         self.trigger_velocity_update()
-
-    def on_go_home(self, _, value):
-        if value:
-            self._home_widget.change_direction(orientation='down',
-                                               target='main')
