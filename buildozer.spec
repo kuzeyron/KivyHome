@@ -87,8 +87,8 @@ android.presplash_color = #3f4142
 # for general documentation.
 # Lottie files can be created using various tools, like Adobe After Effect or Synfig.
 #android.presplash_lottie = "path/to/lottie/file.json"
-presplash.filename = %(source.dir)s/assets/images/splash.png
-icon.filename = %(source.dir)s/assets/images/icon.png
+presplash.filename = %(source.dir)s/libs/assets/images/splash.png
+icon.filename = %(source.dir)s/libs/assets/images/icon.png
 # (str) Adaptive icon of the application (used if Android API level is 26+ at runtime)
 #icon.adaptive_foreground.filename = %(source.dir)s/data/icon_fg.png
 #icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
