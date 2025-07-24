@@ -1,8 +1,9 @@
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import (DictProperty, NumericProperty)
-from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import platform
+from kivy.logger import Logger
 
 from .favorite_apps_configuration import (retrieve_favorite_apps,
                                           store_favorite_apps)
@@ -10,7 +11,7 @@ from .wallpaper import WallpaperHandler
 
 __all__ = ('KivyHome', )
 
-class KivyHome(WallpaperHandler, ScreenManager):
+class KivyHome(WallpaperHandler, BoxLayout):
     _initialized: bool = False
     _instance: object = None
     desktop_icons = DictProperty()
@@ -24,13 +25,17 @@ class KivyHome(WallpaperHandler, ScreenManager):
             Clock.schedule_once(self._setup, 0)
 
     def _store_desktop_data(self, instance=None, value=None) -> None:
+        Logger.debug('[KivyHome] Storing favorite apps')
         store_favorite_apps(config=self.desktop_icons)
 
     def change_direction(self, dt=None, orientation: str = 'up', target: str = 'main') -> None:
-        self.transition.direction, self.current = orientation, target
+        Logger.debug("[KivyHome] Moving the screen to '%s'", orientation)
+        self.ids.kivyhome_manager.transition.direction = orientation
+        self.ids.kivyhome_manager.current = target
 
-    def _setup(self, dt: float = None) -> None:
-        self._apply_wallpaper()
+    def _setup(self, dt: float) -> None:
+        Logger.debug('[KivyHome] Initializing KivyHome')
+        self.on_background_path()
         self.desktop_icons = retrieve_favorite_apps()
         self.bind(desktop_icons=self._store_desktop_data)
 

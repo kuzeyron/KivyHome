@@ -6,7 +6,7 @@ from libs.base import KivyHome
 class SwipeToHome(DampedScrollEffect):
     _ready_to_go_home: bool = True
 
-    def update_velocity(self, dt):
+    def update_velocity(self, dt: float) -> None:
         if abs(self.velocity) <= self.min_velocity and self.overscroll == 0:
             self.velocity = 0
             # why does this need to be rounded? For now refactored it.
@@ -43,12 +43,11 @@ class SwipeToHome(DampedScrollEffect):
                 return
         self.trigger_velocity_update()
 
-    def on_overscroll(self, *args):
-        overscroller = self.overscroll / float(self.target_widget.height)
+    def on_overscroll(self, _: object, overscroll: float) -> None:
+        overscroller = overscroll / float(self.target_widget.height)
         alpha_pressure = .8 if platform == 'android' else .6
         alpha = float(1. - abs(overscroller))
 
-        self.target_widget.disabled = True
         self.target_widget.opacity = min(1, alpha)
 
         if all((alpha_pressure > alpha,

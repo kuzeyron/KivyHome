@@ -33,5 +33,5 @@ class AppLauncher(ButtonBehavior, Label):
     long_press_time = NumericProperty(1.5)
     package = StringProperty('org.test')
 
-    def on_long_press(self, *largs):
+    def on_long_press(self, dt: float = None) -> None:
         launch_app(self.package)

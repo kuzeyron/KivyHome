@@ -12,7 +12,7 @@ def execute_command(cmd: list) -> str:
 
 def launch_app(package: str) -> None:
     Logger.debug("[KivyHome] Attempt on running the package %s", package)
-    if platform in {'android'}:
+    if platform == 'android':
         jnius = import_module('jnius')
         autoclass = jnius.autoclass
         cast = jnius.cast
@@ -23,7 +23,7 @@ def launch_app(package: str) -> None:
         pm = context.getPackageManager()
         launcher = pm.getLaunchIntentForPackage(package)
         activity.startActivity(launcher)
-    elif platform in {'linux'}:
+    elif platform == 'linux':
         execute_command(['gtk-launch', package])
     else:
         Logger.debug("[KivyHome] Launching apps is only supported on Linux/Android devices")
