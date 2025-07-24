@@ -72,11 +72,11 @@ Builder.load_string('''
 class AppMenuButton(ButtonBehavior, Label):
     dtype = StringProperty('desk_apps')
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self._app = KivyHome()
 
-    def add(self, package):
+    def add(self, package: str) -> None:
         if package not in self._app.desktop_icons:
             collection = self.parent.parent.arguments
             collection.update(dict(dtype=self.dtype))
@@ -84,7 +84,7 @@ class AppMenuButton(ButtonBehavior, Label):
             instance = self._app.ids[self.dtype]
             instance.add_widget(Factory.AppIcon(**collection))
 
-    def remove(self, package):
+    def remove(self, package: str) -> None:
         if dtype :=  self._app.desktop_icons.get(package, False):
             if dtype := dtype.get('dtype', self.dtype):
                 del self._app.desktop_icons[package]
@@ -111,7 +111,7 @@ class LongPress(ButtonBehavior):
     isfree: bool = True
     long_tick: float = 1.
 
-    def on_state(self, _, state):
+    def on_state(self, _: object, state: str) -> None:
         touch = self.last_touch.button
         if state == 'down' and touch in {'left', None}:
             self.color_opacity = .5
@@ -125,23 +125,23 @@ class LongPress(ButtonBehavior):
             self._clock.cancel()
             self.isfree = False
 
-    def stop_counting(self, _=None, value=None):
+    def stop_counting(self, dt: float = None) -> None:
         self.isfree = False
 
-    def start_counting(self):
+    def start_counting(self) -> None:
         while self.state == 'down' and self.isfree:
             self.count += .02
             sleep(.05)
 
         self.dispatch('on_trigger')
 
-    def on_touch_move(self, touch):
+    def on_touch_move(self, touch: list) -> None:
         self.isfree = False
         self.count = 0
         super().on_touch_move(touch)
 
     @mainthread
-    def on_trigger(self):
+    def on_trigger(self) -> None:
         if .01 < self.count < .1:
             self.dispatch('on_execution')
             self._vib = vibrate(.05)
@@ -149,10 +149,10 @@ class LongPress(ButtonBehavior):
             self.dispatch('on_menu')
             self._vib = vibrate(.05)
 
-    def on_execution(self, *largs):
+    def on_execution(self) -> None:
         self.count = 0
 
-    def on_menu(self):
+    def on_menu(self) -> None:
         menu = AppMenu()
         menu.package = self.package
         menu.app_name = self.name
@@ -163,6 +163,6 @@ class LongPress(ButtonBehavior):
         menu.open()
         self.count = 0
 
-    def on_release(self):
+    def on_release(self) -> None:
         if self._vib is not None:
             self._vib.cancel()

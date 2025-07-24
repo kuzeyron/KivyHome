@@ -1,17 +1,16 @@
-from kivy.properties import BooleanProperty, NumericProperty, StringProperty
+from kivy.properties import BooleanProperty, NumericProperty
 from kivy.uix.carousel import Carousel
+
 from .base import KivyHome
 
 __all__ = ('Desktop', )
 
 class Desktop(Carousel):
     initial = 0
-    smdirection = StringProperty('up')
-    target = StringProperty('all_apps')
     scroll_distance = NumericProperty('20dp')
     ignore_perpendicular_swipes = BooleanProperty(True)
 
-    def on__offset(self, _, _offset):
+    def on__offset(self, _: object, _offset: float) -> None:
         self._trigger_position_visible_slides()
         # if reached full offset, switch index to next or prev
         direction = self.direction[0]
@@ -39,15 +38,16 @@ class Desktop(Carousel):
                 if new_value is (self._next is None):
                     self._prev, self._next = self._next, self._prev
 
-    def on_touch_move(self, touch):
+    def on_touch_move(self, touch: list) -> None:
         super().on_touch_move(touch)
         self.initial = touch.y
 
-    def on_touch_up(self, touch):
+    def on_touch_up(self, touch: list) -> bool:
         super().on_touch_up(touch)
         if self.collide_point(*touch.pos) and self.initial > (self.height - (self.height / 2.5)) \
             and touch.dy >= 0:
-            KivyHome().change_direction(orientation=self.smdirection,
-                                        target=self.target)
+            self.initial = 0
+            KivyHome().change_direction(orientation='up',
+                                        target='all_apps')
             return True
         return False

@@ -30,7 +30,7 @@ Builder.load_string('''
     background_color: .2, .2, .5, 0
 
     CircularProgressBar:
-        size_hint: .5, .5
+        size_hint: .6, .6
 
 <DesktopApplications>:
     orientation: 'bt-rl' if platform == 'android' else 'tb-lr'

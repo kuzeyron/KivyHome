@@ -5,7 +5,6 @@ from kivy.uix.boxlayout import BoxLayout
 from .applauncher import launch_app
 from .buttonbehavior import LongPress
 
-
 Builder.load_string('''
 <AppIcon>:
     orientation: 'vertical'
@@ -46,5 +45,5 @@ class AppIcon(LongPress, BoxLayout):
     path = StringProperty()
     texture = ObjectProperty()
 
-    def on_execution(self):
+    def on_execution(self) -> None:
         launch_app(self.package)
