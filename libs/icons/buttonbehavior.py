@@ -61,7 +61,7 @@ Builder.load_string('''
         AppMenuButton:
             text: 'Add to drawyer'
             on_release:
-                self.dtype = 'desk_favs'
+                self.desktop_type = 'desktop_favorites'
                 self.add(root.package)
         AppMenuButton:
             text: 'Remove from home'
@@ -70,25 +70,25 @@ Builder.load_string('''
 ''')
 
 class AppMenuButton(ButtonBehavior, Label):
-    dtype = StringProperty('desk_apps')
+    desktop_type = StringProperty('desktop_applications')
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self._app = KivyHome()
+        self._home_widget = KivyHome()
 
     def add(self, package: str) -> None:
-        if package not in self._app.desktop_icons:
+        if package not in self._home_widget.desktop_icons:
             collection = self.parent.parent.arguments
-            collection.update(dict(dtype=self.dtype))
-            self._app.desktop_icons.update({package: collection})
-            instance = self._app.ids[self.dtype]
+            collection.update(dict(desktop_type=self.desktop_type))
+            self._home_widget.desktop_icons.update({package: collection})
+            instance = self._home_widget.ids[self.desktop_type]
             instance.add_widget(Factory.AppIcon(**collection))
 
     def remove(self, package: str) -> None:
-        if dtype :=  self._app.desktop_icons.get(package, False):
-            if dtype := dtype.get('dtype', self.dtype):
-                del self._app.desktop_icons[package]
-                instance = self._app.ids[dtype]
+        if desktop_type :=  self._home_widget.desktop_icons.get(package, False):
+            if desktop_type := desktop_type.get('desktop_type', self.desktop_type):
+                del self._home_widget.desktop_icons[package]
+                instance = self._home_widget.ids[desktop_type]
                 for child in instance.children:
                     if child.package == package:
                         instance.remove_widget(child)
@@ -152,7 +152,7 @@ class LongPress(ButtonBehavior):
     def on_execution(self) -> None:
         self.count = 0
 
-    def on_menu(self) -> None:
+    def on_menu(self, _=None, value=None) -> None:
         menu = AppMenu()
         menu.package = self.package
         menu.app_name = self.name

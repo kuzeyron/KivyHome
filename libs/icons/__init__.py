@@ -129,9 +129,10 @@ class Applications(GetPackages, StackLayout):
         
         kwargs['arguments'] = kwargs
 
-        if dtype :=  self._home_widget.desktop_icons.get(kwargs['package'], {}).get('dtype'):
-            kwargs['dtype'] = dtype
-            instance = self._home_widget.ids[kwargs['dtype']]
+        if desktop_type :=  self._home_widget.desktop_icons.get(kwargs['package']):
+            category_type = desktop_type['desktop_type']
+            kwargs['desktop_type'] = category_type
+            instance = self._home_widget.ids[category_type]
             instance.add_widget(AppIcon(**kwargs))
 
         self.add_widget(AppIcon(**kwargs))
