@@ -51,13 +51,12 @@ def store_favorite_apps(file=None, config=None):
     if isinstance(config, dict):
         # Workaround since deepcopy doesn't work with
         # properties from kivy
-        interesting = ('package', 'name', 'dtype')
         content = {}
 
         for k, v in config.items():
             if isinstance(v, dict):
                 for kk, vv in v.items():
-                    if kk in interesting:
+                    if kk in ('package', 'name', 'desktop_type'):
                         if k not in content:
                             content[k] = {}
                         content[k][kk] = vv

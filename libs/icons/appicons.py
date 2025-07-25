@@ -37,7 +37,7 @@ Builder.load_string('''
 
 class AppIcon(LongPress, BoxLayout):
     arguments: dict = {}
-    dtype = StringProperty('desk_favs')
+    desktop_type = StringProperty('desktop_applications')
     listing: str = ''
     name = StringProperty()
     old = BooleanProperty()
