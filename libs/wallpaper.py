@@ -1,5 +1,5 @@
 import sys
-from os import makedirs, stat
+from os import makedirs, stat, remove
 from os.path import basename, dirname, isfile, join
 
 from kivy.core.image import Image
@@ -10,7 +10,7 @@ from kivy.properties import (ColorProperty, ListProperty, ObjectProperty,
                              OptionProperty, StringProperty)
 from kivy.utils import platform
 
-__all__ = ('texture_cutter', 'get_wallpaper', 'WallpaperHandler')
+__all__ = ('texture_cutter', 'get_wallpaper_texture', 'WallpaperHandler')
 
 DEFAULT_PATH = join(dirname(__file__), 'assets/wallpapers/default_wallpaper.jpeg')
 STORAGE_PATH = sys.path[0]
@@ -49,26 +49,31 @@ def texture_cutter(texture: object = None, crop: list = None) -> object:
                               height=new_height)
 
 
-def get_wallpaper(source: str, crop: list = None, reset: bool = None):
-    cache_folder = join(STORAGE_PATH, '.cache', 'wallpapers')
-    filesize = stat(source).st_size
-    new_filename = f"{filesize};{basename(source)}"
-    cached_path = join(cache_folder, new_filename)
- 
-    if not reset and isfile(cached_path):
-        Logger.debug("[KivyHome] Re-using cached wallpaper at %s", cached_path)
+def get_wallpaper_texture(image_source: str, crop_region: list = None, force_recreate: bool = False, fit_mode: str = 'free'):
+    wallpaper_cache_dir = join(STORAGE_PATH, '.cache', 'wallpapers')
+    source_file_size = stat(image_source).st_size
+    cached_filename = f"{source_file_size};{basename(image_source)}"
+    cached_wallpaper_path = join(wallpaper_cache_dir, cached_filename)
+    is_cached_wallpaper_valid = isfile(cached_wallpaper_path)
 
-        return Image(cached_path).texture
+    if not force_recreate and is_cached_wallpaper_valid and fit_mode != 'free':
+        Logger.debug("[KivyHome] Re-using cached wallpaper from %s", cached_wallpaper_path)
+        return Image(cached_wallpaper_path).texture
+    elif fit_mode == 'free' and is_cached_wallpaper_valid:
+        Logger.debug("[KivyHome] Removing old cached image for 'free' fit mode: %s",
+                     cached_wallpaper_path)
+        remove(cached_wallpaper_path)
 
-    texture = Image(source).texture
+    wallpaper_texture = Image(image_source).texture
 
-    if platform == 'android':
-        texture = texture_cutter(texture, crop)
-        makedirs(cache_folder, exist_ok=True)
-        texture.save(cached_path, flipped=False)
-        Logger.debug("[KivyHome] Stored the cropped wallpaper at %s", cached_path)
+    if platform == 'android' and fit_mode != 'free':
+        wallpaper_texture = texture_cutter(wallpaper_texture, crop_region)
+        makedirs(wallpaper_cache_dir, exist_ok=True)
+        wallpaper_texture.save(cached_wallpaper_path, flipped=False)
+        Logger.debug("[KivyHome] Stored the (cropped) wallpaper at %s",
+                     cached_wallpaper_path)
 
-    return texture
+    return wallpaper_texture
 
 
 class WallpaperHandler(EventDispatcher):
@@ -79,9 +84,12 @@ class WallpaperHandler(EventDispatcher):
     color = ColorProperty((.243, .258, .27, 1))
     fit_mode = OptionProperty('free', options=('free', 'fit'))
 
+    def on_fit_mode(self, _: object = None, mode: str = None):
+        self.on_background_path()
+
     def on_background_path(self, _: object = None, path: str = None) -> None:
         if _path := path or self.background_path:
-            self._texture = get_wallpaper(_path)
+            self._texture = get_wallpaper_texture(_path, fit_mode=self.fit_mode)
             self._scaled_size = self._texture.size
         else:
             Logger.debug("[KivyHome] No wallpapers will be used")
@@ -107,5 +115,3 @@ class WallpaperHandler(EventDispatcher):
                 self._scaled_size = scaled_width_by_height, widget_height
             self._scaled_pos = (center_pos[0] - self._scaled_size[0] / 2,
                                 center_pos[1] - self._scaled_size[1] / 2)
-        else:
-            self._scaled_pos = self.pos

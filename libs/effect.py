@@ -20,7 +20,6 @@ class SwipeToHome(DampedScrollEffect):
             total_force += self.overscroll * self.spring_constant
         else:
             self.overscroll = 0
-            self.target_widget.disabled = False
             self._ready_to_go_home = True
 
         stop_overscroll = ''
