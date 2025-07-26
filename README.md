@@ -1,7 +1,6 @@
 # KivyHome
 For people that want to use Kivy as home app/launcher for Android devices
 or with Linux machines such as the Rasperry Pi.  
-Plans are to turn this project into a library.
 
 ## Usage
 Like you would normally.

@@ -2,7 +2,6 @@ from kivy.app import App
 from kivy.clock import Clock
 from libs.base import KivyHome
 
-
 class MyApp(App):
     def build(self):
         return KivyHome()
