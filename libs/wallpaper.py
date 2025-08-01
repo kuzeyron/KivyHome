@@ -20,10 +20,10 @@ if platform == 'android':
     STORAGE_PATH = app_storage_path()
 
 
-def texture_cutter(texture: object = None, crop: list = None) -> object:
-    crop = crop or Window.size
+def texture_cutter(texture: object = None, crop_region: list = None) -> object:
+    crop_region = crop_region or Window.size
 
-    target_ratio = crop[0] / crop[1]
+    target_ratio = crop_region[0] / crop_region[1]
     texture_ratio = texture.width / float(texture.height)
 
     if texture_ratio > target_ratio:

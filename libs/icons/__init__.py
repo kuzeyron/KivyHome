@@ -4,7 +4,7 @@ from kivy.animation import Animation
 from kivy.clock import mainthread
 from kivy.graphics import Color, Ellipse
 from kivy.lang import Builder
-from kivy.properties import BooleanProperty, NumericProperty
+from kivy.properties import BooleanProperty, NumericProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.modalview import ModalView
 from kivy.uix.progressbar import ProgressBar
@@ -110,7 +110,8 @@ class ProgressHolder(ModalView):
 
 class Applications(GetPackages, StackLayout):
     __events__ = ('on_busy', )
-    isbusy = BooleanProperty(False)
+    apps_path = StringProperty('/usr/share/applications')
+    expiration_time = NumericProperty(259200)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -121,10 +122,10 @@ class Applications(GetPackages, StackLayout):
         Thread(target=self.find_applications, daemon=True).start()
 
     @mainthread
-    def add_one(self, step: int, **kwargs) -> None:
+    def add_application(self, step: int, **kwargs) -> None:
         self.popup.children[0].set_value(step)
 
-        if not kwargs['old']:
+        if not kwargs['use_old_icon']:
             kwargs['texture'].save(kwargs['path'], flipped=False)
         
         kwargs['arguments'] = kwargs

@@ -85,7 +85,7 @@ class AppMenuButton(ButtonBehavior, Label):
             instance.add_widget(Factory.AppIcon(**collection))
 
     def remove(self, package: str) -> None:
-        if desktop_type :=  self._home_widget.desktop_icons.get(package, False):
+        if desktop_type :=  self._home_widget.desktop_icons.get(package):
             if desktop_type := desktop_type.get('desktop_type', self.desktop_type):
                 del self._home_widget.desktop_icons[package]
                 instance = self._home_widget.ids[desktop_type]
