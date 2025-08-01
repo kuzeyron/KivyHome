@@ -40,10 +40,10 @@ class AppIcon(LongPress, BoxLayout):
     desktop_type = StringProperty('desktop_applications')
     listing: str = ''
     name = StringProperty()
-    old = BooleanProperty()
     package = StringProperty()
     path = StringProperty()
     texture = ObjectProperty()
+    use_old_icon = BooleanProperty()
 
     def on_execution(self) -> None:
         launch_app(self.package)

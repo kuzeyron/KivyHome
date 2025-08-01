@@ -1,4 +1,4 @@
-import time
+from time import time
 from io import BytesIO
 from os import makedirs
 from os.path import getmtime, isfile, join
@@ -13,8 +13,6 @@ from kivy.logger import Logger
 __all__ = ('GetPackages', )
 
 class GetPackages:
-    apps_path: str = None
-
     def find_applications(self):
         Intent = autoclass('android.content.Intent')
         PythonActivity = autoclass('org.kivy.android.PythonActivity')
@@ -36,20 +34,22 @@ class GetPackages:
         self.amount_of_applications = len(domains)
         self.dispatch('on_busy', True)
 
-        if time.time() - getmtime(cache_folder) >= 259200:
+        if time() - getmtime(cache_folder) >= self.expiration_time:
             rmtree(cache_folder)
-            Logger.debug('[KivyHome] Removed cached icons')
+            Logger.debug('[KivyHome] Removed cached icons for renewal')
             makedirs(cache_folder, exist_ok=True)
+
+        Logger.debug('[KivyHome] Scanning the device for applications')
 
         for step, domain in enumerate(domains, 1):
             package = domain.activityInfo.packageName
             info = pm.getApplicationInfo(package, pm.GET_META_DATA)
             name = pm.getApplicationLabel(info)
             filename = join(cache_folder, f'{package}.png')
-            image = None
 
-            if not (old := isfile(filename)):
-                Logger.debug('[KivyHome] Rendering icon: %s', filename)
+            if store_old_icon:= isfile(filename):
+                image = Image(filename)
+            else:
                 drawable = domain.activityInfo.loadIcon(pm)
                 bitmap = Bitmap.createBitmap(100, 100, BitmapConfig.ARGB_8888)
                 stream, canvas = OutputStream(), Canvas(bitmap)
@@ -57,10 +57,8 @@ class GetPackages:
                 drawable.draw(canvas)
                 bitmap.compress(CompressFormat.PNG, 100, stream)
                 image = Image(BytesIO(bytes(stream.toByteArray())), ext='png')
-            else:
-                Logger.debug('[KivyHome] Loading cached icon: %s', filename)
-                image = Image(filename)
 
-            self.add_one(step, name=name, package=package, texture=image, old=old, path=filename)
+            self.add_application(step, name=name, package=package, texture=image,
+                                 use_old_icon=store_old_icon, path=filename)
 
         self.dispatch('on_busy', False)
